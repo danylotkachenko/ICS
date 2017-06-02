@@ -150,7 +150,7 @@ loop
 	    end if
 	end if
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	if iy = 4 and ix <= 4 then %add same if statement to all four sides
+	if iy = 4 and ix < 4 then %add same if statement to all four sides
 	    put "There is a cliff in front of you. You can't climb on it."
 	else
 	    if iy = 1 then
