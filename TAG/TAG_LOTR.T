@@ -41,18 +41,25 @@ put "stout hearted, may be the key. They form a fellowship with Men, weak but "
 put "passionate, powerful Dwarves, graceful Elves - each sending representatives to "
 put "serve the good of all free people of Middle-earth."
 put " "
-put "     In the game you play as Frodo Baggins, a Hobbit whos destiny is to destroy the One Ring. You meet Frodo on the final " ..
-put "stage of the jorney, where there is "
-put "danger on every corner. You need to help himcross the wastes of Mordor so he candestroy the Ring in the Mount Doom and free the lands from "
-put "the darkness."
+put "     You play as Frodo Baggins, a Hobbit whos destiny is to destroy the One "
+put "Ring. You meet Frodo on the final " ..
+put "stage of the jorney, where there is danger on every corner. You need to help him cross the wastes of Mordor so he can "
+put "destroy the Ring in the Mount Doom and free the lands from the darkness."
 put "To contiue press any key."
 getch (ch)
 cls
 
-locate (1, 23)
-put "Commands / tutorial / description"
+locate (1, 33)
+put "Tutorial"
+put "1. To move around use compass directions - south, north, east and west only"
+put "2. To attack an enemy unit - attack"
+put "3. To retreat from the enemy unit - retreat"
+put "4. To use an object - use"
+put "5. Other not commonly used commands will be provided during the game"
+put "6. To exit the game - stop"
+put " "
 put "To start the game press any key"
-getch (ch)
+getch (ch) 
 cls
 
 loop
@@ -64,7 +71,7 @@ loop
     put " "
 
     put "Where would you like to go?"
-    get ianswer
+    get ianswer 
 
     if ianswer = "south" then
         if iy = 4 and ix < 4 then %add same if statement to four other sides
@@ -151,7 +158,7 @@ loop
                 end if
 
                 if icreature = 5 then
-                    put "There is a Ringwraith on your way. You have a few options, which can save you from the Nuzgul."
+                    put "There is a Ringwraith on your way. You have a few options, which can save you from the Nazgul."
                     loop
                         put "a) Hide - put the One Ring on. "
                         put "b) Attack - attack the Ringwraith."
@@ -304,7 +311,7 @@ loop
                 end if
 
                 if icreature = 5 then
-                    put "There is a Ringwraith on your way. You have a few options, which can save you from the Nuzgul."
+                    put "There is a Ringwraith on your way. You have a few options, which can save you from the Nazgul."
                     loop
                         put "a) Hide - put the One Ring on. "
                         put "b) Attack - attack the Ringwraith."
@@ -449,7 +456,7 @@ loop
                 end if
 
                 if icreature = 5 then
-                    put "There is a Ringwraith on your way. You have a few options, which can save you from the Nuzgul."
+                    put "There is a Ringwraith on your way. You have a few options, which can save you from the Nazgul."
                     loop
                         put "a) Hide - put the One Ring on. "
                         put "b) Attack - attack the Ringwraith."
@@ -602,7 +609,7 @@ loop
                 end if
 
                 if icreature = 5 then
-                    put "There is a Ringwraith on your way. You have a few options, which can save you from the Nuzgul."
+                    put "There is a Ringwraith on your way. You have a few options, which can save you from the Nazgul."
                     loop
                         put "a) Hide - put the One Ring on. "
                         put "b) Attack - attack the Ringwraith."
@@ -667,7 +674,3 @@ put ilife_scale
 put "# of steps ", isteps
 put "x-value is ", ix
 put "y-value is ", iy
-
-
-
-
