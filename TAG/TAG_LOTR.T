@@ -1,23 +1,23 @@
 %Game board (10 by 10)
-var isentinel : string := "stop"
-var ianswer : string
-var isteps : int := 0
-var ix, iy : int := 1
-var irope : int
-var iforces : int
-var icreature : int
-var inum1 : int := 1
-var inum2 : int := 2
-var inum3 : int := 3
-var ianswer2 : string
-var iobjects : int := 0
-var icommand : string
-var icommand_correct : string := "use"
-var ianswer3 : string
-var ianswer4 : string
-var ipoints_lost : int
-var ilife_scale : int := 100
-var imission_lost : int := 0
+var isentinel : string := "stop" %exits the game
+var ianswer : string %direction in which user wants to go
+var isteps : int := 0 %calculates # of steps taken
+var ix, iy : int := 1 %x and y values that make up the field
+var irope : int %generates random number, if it is correct then user founds a rope
+var iforces : int %generates random number, if it is correct then other command generates a unit
+var icreature : int %generates 1 of 3 different types of enemies
+var inum1 : int := 1 %correct condition for generating a rope
+var inum2 : int := 2 %correct condition for generating an enemy
+var inum3 : int := 3 %another correct condition for generating an enemy
+var ianswer2 : string %true or false condition, if it is true user takes the rope, if it is wrong user doesn't take it
+var iobjects : int := 0 %condition which makes it impossble to take a rope more than once
+var icommand : string %condition which allows user to get down from the cliff
+var icommand_correct : string := "use" %correct answer to the icommand, if it is inputted user gets down from the cliff
+var ianswer3 : string %gets one of two possible answers, whether user wants to fight or retreat
+var ianswer4 : string %gets one of three possible answers, combat options
+var ipoints_lost : int %random command, which generates number of points lost
+var ilife_scale : int := 100 %shows # of points you have, decreses # after combat situation
+var imission_lost : int := 0 %condition similar to boolean, if it is positive user loses, end of the game is implemented
 var ch : string (1)
 
 var istatement : string := "You can't go that way. You are on the very edge of the field."
@@ -26,12 +26,14 @@ var istatement3 : string
 var istatement4 : string
 var istatement5 : string
 var istatement6 : string
+
 %setscreen ("graphics:800;600")
 Text.Colour (yellow)
 Text.ColourBack (black)
 cls
 locate (1, 23)
 put "THE LORD OF THE RINGS - LABYRINTH"
+put " "
 put "     Middle-earth is under attack. Sauron, a being of unfathomable evil, plans  to rule the lands using the will sapping Rings of Power. " ..
 put "His forces include vileOrcs, hordes of slavering Goblins, the mighty Ringwraith and more."
 put " "
