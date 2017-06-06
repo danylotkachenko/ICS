@@ -26,7 +26,7 @@ var istatement3 : string
 var istatement4 : string
 var istatement5 : string
 var istatement6 : string
-
+%setscreen ("graphics:800;600")
 Text.Colour (yellow)
 Text.ColourBack (black)
 cls
@@ -45,6 +45,7 @@ put "     You play as Frodo Baggins, a Hobbit whos destiny is to destroy the One
 put "Ring. You meet Frodo on the final " ..
 put "stage of the jorney, where there is danger on every corner. You need to help him cross the wastes of Mordor so he can "
 put "destroy the Ring in the Mount Doom and free the lands from the darkness."
+put " "
 put "To contiue press any key."
 getch (ch)
 cls
@@ -59,7 +60,7 @@ put "5. Other not commonly used commands will be provided during the game"
 put "6. To exit the game - stop"
 put " "
 put "To start the game press any key"
-getch (ch) 
+getch (ch)
 cls
 
 loop
@@ -71,7 +72,7 @@ loop
     put " "
 
     put "Where would you like to go?"
-    get ianswer 
+    get ianswer
 
     if ianswer = "south" then
         if iy = 4 and ix < 4 then %add same if statement to four other sides
