@@ -15,6 +15,7 @@ var icommand : string %condition which allows user to get down from the cliff
 var icommand_correct : string := "use" %correct answer to the icommand, if it is inputted user gets down from the cliff
 var ianswer3 : string %gets one of two possible answers, whether user wants to fight or retreat
 var ianswer4 : string %gets one of three possible answers, combat options
+%var ianswer5 : string %tells whether user wants to play a game
 var ipoints_lost : int %random command, which generates number of points lost
 var ilife_scale : int := 100 %shows # of points you have, decreses # after combat situation
 var imission_lost : int := 0 %condition similar to boolean, if it is positive user loses, end of the game is implemented
@@ -79,7 +80,7 @@ loop
     get ianswer
 
     if ianswer = "south" then
-        if iy = 4 and ix < 4 then %add same if statement to four other sides
+        if iy = 4 and ix < 4 then     %add same if statement to four other sides
             put "There is a cliff in front of you. You can't climb on it."
         else
             if iy = 1 then
@@ -149,7 +150,7 @@ loop
 
                 if icreature = 4 then
                     put "You were attacked by a horde of Goblins." ..
-                    put " You are trapped. Your only option is to defeat them."
+                    put "You are trapped. Your only option is to defeat them."
                     delay (3000)
                     iy := iy + 0
                     isteps := isteps + 0
@@ -205,7 +206,7 @@ loop
                             end if
                         end if
                         if ianswer4 = "give" then
-                            put "You lost. Middle-earth will get thrown into an Age OF Darkness."
+                            put "You lost. Middle-earth will get thrown into an Age of Darkness."
                             isteps := isteps + 0
                             imission_lost := imission_lost + 1
                             %implement end of the game when ilife_scale is zero or less
@@ -453,7 +454,7 @@ loop
 
                 if icreature = 4 then
                     put "You were attacked by a horde of Goblins." ..
-                    put " You are trapped. Your only option is to defeat them."
+                    put "You are trapped. Your only option is to defeat them."
                     delay (3000)
                     ix := ix + 0
                     isteps := isteps + 0
@@ -610,7 +611,7 @@ loop
 
                 if icreature = 4 then
                     put "You were attacked by a horde of Goblins." ..
-                    put " You are trapped. Your only option is to defeat them."
+                    put "You are trapped. Your only option is to defeat them."
                     delay (3000)
                     ix := ix + 0
                     isteps := isteps + 0
@@ -687,7 +688,17 @@ loop
     exit when ianswer = isentinel
     exit when imission_lost = 1
 end loop
-put ilife_scale
+if imission_lost = 1 then
+    put "   The Age of Men is over. The time of the Orcs has come. - Gothmog, Orc Leader"
+else
+    if ianswer = isentinel then
+        put "Would you like to play again?"
+    else
+        put "You destroyed the One Ring and saved all of the free people of Middle-earth."
+        put "   Let us together rebuild this world that we may share in the days of peace. - Aragorn"
+    end if
+end if
+%put ilife_scale
 put "# of steps ", isteps
 put "x-value is ", ix
 put "y-value is ", iy
