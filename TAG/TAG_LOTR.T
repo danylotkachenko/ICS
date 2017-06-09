@@ -19,8 +19,10 @@ var ianswer4 : string %gets one of three possible answers, combat options
 var ipoints_lost : int %random command, which generates number of points lost
 var ilife_scale : int := 100 %shows # of points you have, decreses # after combat situation
 var imission_lost : int := 0 %condition similar to boolean, if it is positive user loses, end of the game is implemented
-var ch : string (1)
-var imax_count : int := 10
+var ch : string (1) %program  to  pause  until  the  user presses a key
+var imax_count : int := 10 %starting amount of life points, one asteriks stands for 10 points
+var ifont : int := Font.New("Times New Roman:24:bold")
+var ifont2 : int := Font.New("Times New Roman:18:bold")
 
 var istatement : string := "You can't go that way. You are on the very edge of the field."
 var istatement2 : string
@@ -28,6 +30,13 @@ var istatement3 : string
 var istatement4 : string
 var istatement5 : string
 var istatement6 : string
+
+View.Set ("nocursor")
+Text.ColourBack (red)
+cls
+Font.Draw("THE LORD OF THE RINGS - LABYRINTH", 9, 205, ifont, black)
+Font.Draw("By Danylo Tkachenko", 193, 18, ifont2, black)
+getch (ch)
 
 %setscreen ("graphics:800;600")
 Text.Colour (yellow)
