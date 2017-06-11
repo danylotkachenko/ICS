@@ -21,8 +21,28 @@ var ilife_scale : int := 100 %shows # of points you have, decreses # after comba
 var imission_lost : int := 0 %condition similar to boolean, if it is positive user loses, end of the game is implemented
 var ch : string (1) %program  to  pause  until  the  user presses a key
 var imax_count : int := 10 %starting amount of life points, one asteriks stands for 10 points
-var ifont : int := Font.New("Times New Roman:24:bold")
-var ifont2 : int := Font.New("Times New Roman:18:bold")
+var ifont : int := Font.New ("Times New Roman:24:bold")
+var ifont2 : int := Font.New ("Times New Roman:18:bold")
+
+%BEGIN MOUNTAIN DEFINITION
+var mountain : array 1 .. 10, 1 .. 10 of int
+
+for i : 1 .. 10
+    for j : 1 .. 10
+        mountain (i, j) := 0
+    end for
+end for
+
+mountain (10, 10) := 3
+mountain (9, 10) := 2
+mountain (10, 9) := 2
+mountain (9, 9) := 1
+mountain (9, 8) := 2
+mountain (8, 9) := 1
+mountain (8, 8) := 0
+mountain (8, 10) := 0
+mountain (10, 8) := 0
+%END MOUNTAIN DEFINITION
 
 var istatement : string := "You can't go that way. You are on the very edge of the field."
 var istatement2 : string
@@ -31,11 +51,52 @@ var istatement4 : string
 var istatement5 : string
 var istatement6 : string
 
+
+function CanIGoThroughMountain (direction : string) : boolean
+
+    var newX : int
+    var newY : int
+
+    if iy = 7 and ix > 7 then
+    put "In north direction you can see Mount Doom. The only thing left to do is ascend the mountain and destroy the Ring."
+    end if
+    if ix = 7 and iy > 7 then
+    put "You finally reached Mount Doom. Now you have to find a safe path to the entrance."    
+    end if
+    
+    if (direction = "east") then
+        newX := ix + 1
+        newY := iy
+    end if
+    if (direction = "west") then
+        newX := ix - 1
+        newY := iy
+    end if
+    if (direction = "north") then
+        newX := ix
+        newY := iy + 1
+    end if
+    if (direction = "south") then
+        newX := ix
+        newY := iy - 1
+    end if
+
+    %put "Coordinates: ", ix, " ", iy
+    %put "array indecies: ", newX, " ", newY
+    if (abs (mountain (newX, newY) - mountain (ix, iy)) > 1) then
+        put "It is impossible to go that way. Let's find another path."
+        result false
+    else
+        result true
+    end if
+end CanIGoThroughMountain
+
+
 View.Set ("nocursor")
 Text.ColourBack (red)
 cls
-Font.Draw("THE LORD OF THE RINGS - LABYRINTH", 9, 205, ifont, black)
-Font.Draw("By Danylo Tkachenko", 193, 18, ifont2, black)
+Font.Draw ("THE LORD OF THE RINGS - LABYRINTH", 9, 205, ifont, black)
+Font.Draw ("By Danylo Tkachenko", 193, 18, ifont2, black)
 getch (ch)
 
 %setscreen ("graphics:800;600")
@@ -95,141 +156,142 @@ loop
             if iy = 1 then
                 put istatement
             else
-                iy := iy - 1
-                isteps := isteps + 1
-                randint (irope, 1, 4)
-                if iobjects = 1 then
-                    irope := 0
-                end if
-                if irope = inum1 then
-                    put "You found an Elvish rope. It was lying in the trunk of the tree."
-                    loop
-                        put "Would you like to take a rope?"
-                        get ianswer2
-                        if ianswer2 = "yes" then
-                            iobjects := iobjects + 1
-                            put "You took the rope."
-                        end if
-                        if ianswer2 = "no" then
-                            iobjects := iobjects + 0
-                            put "You didn't take the rope."
-                        end if
-                        if ianswer2 not= "yes" and ianswer2 not= "no" then
-                            iobjects := iobjects + 0
-                            put "Invalid answer"
-                        end if
-                        exit when ianswer2 = "yes" or ianswer2 = "no"
-                    end loop
-                end if
-            end if
-        end if
-        %add 3D mountain when x=8 and y=9
-        if iy > 3 or ix > 3 then         %add x
-            randint (iforces, 1, 4)
-            if iforces = inum2 or iforces = inum3 then
-                randint (icreature, 3, 5)
-
-                if icreature = 3 then
-                    put "There are vile Orcs blocking the path. You have two options: "
-                    loop
-                        put "a) Retreat - move to where you came from."
-                        put "b) Attack - fight Sauron's forces."
-                        get ianswer3
-                        if ianswer3 = "retreat" then
-                            iy := iy - 1
-                        end if
-                        if ianswer3 = "attack" then
-                            iy := iy + 0
-                            isteps := isteps + 0
-                            randint (ipoints_lost, 1, 10)
-                            ilife_scale := ilife_scale - ipoints_lost
-                            if ilife_scale > 0 then
-                                put "You sucessfully defeated all of the Orcs. During the fight you lost ", ipoints_lost, " points."
-                                put "The pass is clear for now."
-                            else
-                                put "You were defeated."
-                                imission_lost := imission_lost + 1
-                                %implement end of the game when ilife_scale is zero or less
-                            end if
-                        end if
-                        if ianswer3 not= "retreat" and ianswer3 not= "attack" then
-                            put "Invalid command."
-                        end if
-                        exit when ianswer3 = "retreat" or ianswer3 = "attack"
-                    end loop
-                end if
-
-                if icreature = 4 then
-                    put "You were attacked by a horde of Goblins." 
-                    put "You are trapped. Your only option is to fight them."
-                    delay (3000)
-                    iy := iy + 0
-                    isteps := isteps + 0
-                    randint (ipoints_lost, 1, 15)
-                    ilife_scale := ilife_scale - ipoints_lost
-                    put "You defeated the enemy. During the fight you lost ", ipoints_lost, " points."
-                    if ilife_scale <= 0 then
-                        put "You weren't able to win. You run out of energy."
-                        %game ends if ilife_points <= 0
-                        imission_lost := imission_lost + 1
+                if CanIGoThroughMountain ("south") then
+                    iy := iy - 1
+                    isteps := isteps + 1
+                    randint (irope, 1, 4)
+                    if iobjects = 1 then
+                        irope := 0
                     end if
-                end if
+                    if irope = inum1 then
+                        put "You found an Elvish rope. It was lying in the trunk of the tree."
+                        loop
+                            put "Would you like to take a rope?"
+                            get ianswer2
+                            if ianswer2 = "yes" then
+                                iobjects := iobjects + 1
+                                put "You took the rope."
+                            end if
+                            if ianswer2 = "no" then
+                                iobjects := iobjects + 0
+                                put "You didn't take the rope."
+                            end if
+                            if ianswer2 not= "yes" and ianswer2 not= "no" then
+                                iobjects := iobjects + 0
+                                put "Invalid answer"
+                            end if
+                            exit when ianswer2 = "yes" or ianswer2 = "no"
+                        end loop
+                    end if
+                    if iy > 3 or ix > 3 then         %add x
+                        randint (iforces, 1, 4)
+                        if iforces = inum2 or iforces = inum3 then
+                            randint (icreature, 3, 5)
 
-                if icreature = 5 then
-                    put "There is a Ringwraith on your way. The only options that can save you are:"
-                    %put "from the Nazgul."
-                    loop
-                        put "a) Hide - put the One Ring on. "
-                        put "b) Attack - attack the Ringwraith."
-                        put "c) Give - give the Ring to the Nazgul."
-                        get ianswer4
-                        if ianswer4 = "hide" then
-                            iy := iy + 0
-                            isteps := isteps + 0
-                            randint (ipoints_lost, 10, 30)
-                            ilife_scale := ilife_scale - ipoints_lost
-                            if ipoints_lost > 15 and ilife_scale > 0 then
-                                put "Ringwraith can sense the Ring. You are still visible to them!" 
-                                delay (2000)
-                                put "You were able to win the round. Though, you sustained heavy damage. You lost " ..
-                                put ipoints_lost, "points."
-                            else
-                                if ipoints_lost <= 15 and ilife_scale > 0 then
-                                    put "Ringwraith can see you even when you are invisible to everyone. Still, you were able to defeat him. During the fight you lost " ..
-                                    put ipoints_lost, " life points. Not bad at all, considering you were fighting a Nazgul."
+                            if icreature = 3 then
+                                put "There are vile Orcs blocking the path. You have two options: "
+                                loop
+                                    put "a) Retreat - move to where you came from."
+                                    put "b) Attack - fight Sauron's forces."
+                                    get ianswer3
+                                    if ianswer3 = "retreat" then
+                                        iy := iy + 1
+                                    end if
+                                    if ianswer3 = "attack" then
+                                        iy := iy + 0
+                                        isteps := isteps + 0
+                                        randint (ipoints_lost, 1, 10)
+                                        ilife_scale := ilife_scale - ipoints_lost
+                                        if ilife_scale > 0 then
+                                            put "You sucessfully defeated all of the Orcs. During the fight you lost ", ipoints_lost, " points."
+                                            put "The pass is clear for now."
+                                        else
+                                            put "You were defeated."
+                                            imission_lost := imission_lost + 1
+                                            %implement end of the game when ilife_scale is zero or less
+                                        end if
+                                    end if
+                                    if ianswer3 not= "retreat" and ianswer3 not= "attack" then
+                                        put "Invalid command."
+                                    end if
+                                    exit when ianswer3 = "retreat" or ianswer3 = "attack"
+                                end loop
+                            end if
+
+                            if icreature = 4 then
+                                put "You were attacked by a horde of Goblins."
+                                put "You are trapped. Your only option is to fight them."
+                                delay (3000)
+                                iy := iy + 0
+                                isteps := isteps + 0
+                                randint (ipoints_lost, 1, 15)
+                                ilife_scale := ilife_scale - ipoints_lost
+                                put "You defeated the enemy. During the fight you lost ", ipoints_lost, " points."
+                                if ilife_scale <= 0 then
+                                    put "You weren't able to win. You run out of energy."
+                                    %game ends if ilife_points <= 0
+                                    imission_lost := imission_lost + 1
                                 end if
                             end if
-                            if ilife_scale <= 0 then
-                                put "You were defeated."
-                                imission_lost := imission_lost + 1
-                                %implement end of the game when ilife_scale is zero or less
+
+                            if icreature = 5 then
+                                put "There is a Ringwraith on your way. The only options that can save you are:"
+                                %put "from the Nazgul."
+                                loop
+                                    put "a) Hide - put the One Ring on. "
+                                    put "b) Attack - attack the Ringwraith."
+                                    put "c) Give - give the Ring to the Nazgul."
+                                    get ianswer4
+                                    if ianswer4 = "hide" then
+                                        iy := iy + 0
+                                        isteps := isteps + 0
+                                        randint (ipoints_lost, 10, 30)
+                                        ilife_scale := ilife_scale - ipoints_lost
+                                        if ipoints_lost > 15 and ilife_scale > 0 then
+                                            put "Ringwraith can sense the Ring. You are still visible to them!"
+                                            delay (2000)
+                                            put "You were able to win the round. Though, you sustained heavy damage. You lost " ..
+                                            put ipoints_lost, "points."
+                                        else
+                                            if ipoints_lost <= 15 and ilife_scale > 0 then
+                                                put "Ringwraith can see you even when you are invisible to everyone. Still, you were able to defeat him. During the fight you lost " ..
+                                                put ipoints_lost, " life points. Not bad at all, considering you were fighting a Nazgul."
+                                            end if
+                                        end if
+                                        if ilife_scale <= 0 then
+                                            put "You were defeated."
+                                            imission_lost := imission_lost + 1
+                                            %implement end of the game when ilife_scale is zero or less
+                                        end if
+                                    end if
+                                    if ianswer4 = "attack" then
+                                        iy := iy + 0
+                                        isteps := isteps + 0
+                                        randint (ipoints_lost, 10, 20)
+                                        ilife_scale := ilife_scale - ipoints_lost
+                                        if ilife_scale > 0 then
+                                            put "You were able to defeat the mighty Nazgul. It cost you ", ipoints_lost, " points."
+                                        else
+                                            put "You were defeated."
+                                            imission_lost := imission_lost + 1
+                                            %implement end of the game when ilife_scale is zero or less
+                                        end if
+                                    end if
+                                    if ianswer4 = "give" then
+                                        put "You lost. Now middle-earth will get thrown into an Age of Darkness."
+                                        isteps := isteps + 0
+                                        imission_lost := imission_lost + 1
+                                        %implement end of the game when ilife_scale is zero or less
+                                    end if
+                                    if ianswer4 not= "hide" and ianswer4 not= "attack" and ianswer4 not= "give" then
+                                        put "Invalid command. Try again."
+                                    end if
+                                    exit when ianswer4 = "hide" or ianswer4 = "attack" or ianswer4 = "give"
+                                    exit when imission_lost = 1
+                                end loop
                             end if
                         end if
-                        if ianswer4 = "attack" then
-                            iy := iy + 0
-                            isteps := isteps + 0
-                            randint (ipoints_lost, 10, 20)
-                            ilife_scale := ilife_scale - ipoints_lost
-                            if ilife_scale > 0 then
-                                put "You were able to defeat the mighty Nazgul. It cost you ", ipoints_lost, " points."
-                            else
-                                put "You were defeated."
-                                imission_lost := imission_lost + 1
-                                %implement end of the game when ilife_scale is zero or less
-                            end if
-                        end if
-                        if ianswer4 = "give" then
-                            put "You lost. Now middle-earth will get thrown into an Age of Darkness."
-                            isteps := isteps + 0
-                            imission_lost := imission_lost + 1
-                            %implement end of the game when ilife_scale is zero or less
-                        end if
-                        if ianswer4 not= "hide" and ianswer4 not= "attack" and ianswer4 not= "give" then
-                            put "Invalid command. Try again."
-                        end if
-                        exit when ianswer4 = "hide" or ianswer4 = "attack" or ianswer4 = "give"
-                        exit when imission_lost = 1
-                    end loop
+                    end if
                 end if
             end if
         end if
@@ -255,139 +317,141 @@ loop
                     end if
                 end if
             else
-                iy := iy + 1
-                isteps := isteps + 1
+                if CanIGoThroughMountain ("north") then
+                    iy := iy + 1
+                    isteps := isteps + 1
 
-                randint (irope, 1, 4)
-                if iobjects = 1 then
-                    irope := 0
-                end if
-                if irope = inum1 then
-                    put "You found a rope."
-                    loop
-                        put "Would you like to take a rope?"
-                        get ianswer2
-                        if ianswer2 = "yes" then
-                            iobjects := iobjects + 1
-                            put "You took the rope."
-                        end if
-                        if ianswer2 = "no" then
-                            iobjects := iobjects + 0
-                            put "You didn't take the rope."
-                        end if
-                        if ianswer2 not= "yes" and ianswer2 not= "no" then
-                            iobjects := iobjects + 0
-                            put "Invalid answer"
-                        end if
-                        exit when ianswer2 = "yes" or ianswer2 = "no"
-                    end loop
-                end if
-            end if
-        end if
-        if iy > 3 or ix > 3 then     %add x
-            randint (iforces, 1, 4)
-            if iforces = inum2 or iforces = inum3 then
-                randint (icreature, 3, 5)
-
-                if icreature = 3 then
-                    put "There are vile Orcs blocking the path. You have two options: "
-                    loop
-                        put "a) Retreat - move to your previous location."
-                        put "b) Attack - fight Sauron's forces."
-                        get ianswer3
-                        if ianswer3 = "retreat" then
-                            iy := iy - 1
-                        end if
-                        if ianswer3 = "attack" then
-                            iy := iy + 0
-                            isteps := isteps + 0
-                            randint (ipoints_lost, 1, 10)
-                            ilife_scale := ilife_scale - ipoints_lost
-                            if ilife_scale > 0 then
-                                put "You sucessfully defeated all of the Orcs. During the fight you lost ", ipoints_lost, " points."
-                            else
-                                put "You were defeated."
-                                imission_lost := imission_lost + 1
-                                %implement end of the game when ilife_scale is zero or less
-                            end if
-                        end if
-                        if ianswer3 not= "retreat" and ianswer3 not= "attack" then
-                            put "Invalid command."
-                        end if
-                        exit when ianswer3 = "retreat" or ianswer3 = "attack"
-                    end loop
-                end if
-
-                if icreature = 4 then
-                    put "You were attacked by a horde of Goblins." ..
-                    put "You are trapped. Your only option is to defeat them."
-                    delay (3000)
-                    iy := iy + 0
-                    isteps := isteps + 0
-                    randint (ipoints_lost, 1, 15)
-                    ilife_scale := ilife_scale - ipoints_lost
-                    put "You defeated the enemy. During the fight you lost ", ipoints_lost, " points."
-                    if ilife_scale <= 0 then
-                        put "You were defeated. Now Sauron will rule the middle-earth."
-                        %game ends if ilife_points <= 0
-                        imission_lost := imission_lost + 1
+                    randint (irope, 1, 4)
+                    if iobjects = 1 then
+                        irope := 0
                     end if
-                end if
+                    if irope = inum1 then
+                        put "You found a rope."
+                        loop
+                            put "Would you like to take a rope?"
+                            get ianswer2
+                            if ianswer2 = "yes" then
+                                iobjects := iobjects + 1
+                                put "You took the rope."
+                            end if
+                            if ianswer2 = "no" then
+                                iobjects := iobjects + 0
+                                put "You didn't take the rope."
+                            end if
+                            if ianswer2 not= "yes" and ianswer2 not= "no" then
+                                iobjects := iobjects + 0
+                                put "Invalid answer"
+                            end if
+                            exit when ianswer2 = "yes" or ianswer2 = "no"
+                        end loop
+                    end if
+                    if iy > 3 or ix > 3 then %add x
+                        randint (iforces, 1, 4)
+                        if iforces = inum2 or iforces = inum3 then
+                            randint (icreature, 3, 5)
 
-                if icreature = 5 then
-                    put "There is a Ringwraith on your way. You have a few options, which can save you"
-                    put "from the Nazgul."
-                    loop
-                        put "a) Hide - put the One Ring on. "
-                        put "b) Attack - attack the Ringwraith."
-                        put "c) Give - give the Ring to the Ringwraith."
-                        get ianswer4
-                        if ianswer4 = "hide" then
-                            iy := iy + 0
-                            isteps := isteps + 0
-                            randint (ipoints_lost, 10, 30)
-                            ilife_scale := ilife_scale - ipoints_lost
-                            if ipoints_lost > 15 and ilife_scale > 0 then
-                                put "Even with the Ring Nazgul was able to see you. You were able to win the round. Though, you sustained heavy damage. You lost " ..
-                                put ipoints_lost, "points."
-                            else
-                                if ipoints_lost <= 15 and ilife_scale > 0 then
-                                    put "Ringwraith can see you even when you are invisible to everyone. Still, you were able to defeat him. During the fight you lost " ..
-                                    put ipoints_lost, " life points. Not bad at all, "
-                                    put "considering you were fighting a Nazgul."
+                            if icreature = 3 then
+                                put "There are vile Orcs blocking the path. You have two options: "
+                                loop
+                                    put "a) Retreat - move to your previous location."
+                                    put "b) Attack - fight Sauron's forces."
+                                    get ianswer3
+                                    if ianswer3 = "retreat" then
+                                        iy := iy - 1
+                                    end if
+                                    if ianswer3 = "attack" then
+                                        iy := iy + 0
+                                        isteps := isteps + 0
+                                        randint (ipoints_lost, 1, 10)
+                                        ilife_scale := ilife_scale - ipoints_lost
+                                        if ilife_scale > 0 then
+                                            put "You sucessfully defeated all of the Orcs. During the fight you lost ", ipoints_lost, " points."
+                                        else
+                                            put "You were defeated."
+                                            imission_lost := imission_lost + 1
+                                            %implement end of the game when ilife_scale is zero or less
+                                        end if
+                                    end if
+                                    if ianswer3 not= "retreat" and ianswer3 not= "attack" then
+                                        put "Invalid command."
+                                    end if
+                                    exit when ianswer3 = "retreat" or ianswer3 = "attack"
+                                end loop
+                            end if
+
+                            if icreature = 4 then
+                                put "You were attacked by a horde of Goblins." ..
+                                put "You are trapped. Your only option is to defeat them."
+                                delay (3000)
+                                iy := iy + 0
+                                isteps := isteps + 0
+                                randint (ipoints_lost, 1, 15)
+                                ilife_scale := ilife_scale - ipoints_lost
+                                put "You defeated the enemy. During the fight you lost ", ipoints_lost, " points."
+                                if ilife_scale <= 0 then
+                                    put "You were defeated. Now Sauron will rule the middle-earth."
+                                    %game ends if ilife_points <= 0
+                                    imission_lost := imission_lost + 1
                                 end if
                             end if
-                            if ilife_scale <= 0 then
-                                put "You were defeated."
-                                imission_lost := imission_lost + 1
-                                %implement end of the game when ilife_scale is zero or less
+
+                            if icreature = 5 then
+                                put "There is a Ringwraith on your way. You have a few options, which can save you"
+                                put "from the Nazgul."
+                                loop
+                                    put "a) Hide - put the One Ring on. "
+                                    put "b) Attack - attack the Ringwraith."
+                                    put "c) Give - give the Ring to the Ringwraith."
+                                    get ianswer4
+                                    if ianswer4 = "hide" then
+                                        iy := iy + 0
+                                        isteps := isteps + 0
+                                        randint (ipoints_lost, 10, 30)
+                                        ilife_scale := ilife_scale - ipoints_lost
+                                        if ipoints_lost > 15 and ilife_scale > 0 then
+                                            put "Even with the Ring Nazgul was able to see you. You were able to win the round. Though, you sustained heavy damage. You lost " ..
+                                            put ipoints_lost, "points."
+                                        else
+                                            if ipoints_lost <= 15 and ilife_scale > 0 then
+                                                put "Ringwraith can see you even when you are invisible to everyone. Still, you were able to defeat him. During the fight you lost " ..
+                                                put ipoints_lost, " life points. Not bad at all, "
+                                                put "considering you were fighting a Nazgul."
+                                            end if
+                                        end if
+                                        if ilife_scale <= 0 then
+                                            put "You were defeated."
+                                            imission_lost := imission_lost + 1
+                                            %implement end of the game when ilife_scale is zero or less
+                                        end if
+                                    end if
+                                    if ianswer4 = "attack" then
+                                        iy := iy + 0
+                                        isteps := isteps + 0
+                                        randint (ipoints_lost, 10, 20)
+                                        ilife_scale := ilife_scale - ipoints_lost
+                                        if ilife_scale > 0 then
+                                            put "You were able to defeat the mighty Nazgul. It cost you ", ipoints_lost, " points."
+                                        else
+                                            put "You were defeated."
+                                            imission_lost := imission_lost + 1
+                                            %implement end of the game when ilife_scale is zero or less
+                                        end if
+                                    end if
+                                    if ianswer4 = "give" then
+                                        put "You lost. Middle-earth will get thrown into an Age of Darkness."
+                                        isteps := isteps + 0
+                                        imission_lost := imission_lost + 1
+                                        %implement end of the game when ilife_scale is zero or less
+                                    end if
+                                    if ianswer4 not= "hide" and ianswer4 not= "attack" and ianswer4 not= "give" then
+                                        put "Invalid command. Try again."
+                                    end if
+                                    exit when ianswer4 = "hide" or ianswer4 = "attack" or ianswer4 = "give"
+                                    exit when imission_lost = 1
+                                end loop
                             end if
                         end if
-                        if ianswer4 = "attack" then
-                            iy := iy + 0
-                            isteps := isteps + 0
-                            randint (ipoints_lost, 10, 20)
-                            ilife_scale := ilife_scale - ipoints_lost
-                            if ilife_scale > 0 then
-                                put "You were able to defeat the mighty Nazgul. It cost you ", ipoints_lost, " points."
-                            else
-                                put "You were defeated."
-                                imission_lost := imission_lost + 1
-                                %implement end of the game when ilife_scale is zero or less
-                            end if
-                        end if
-                        if ianswer4 = "give" then
-                            put "You lost. Middle-earth will get thrown into an Age of Darkness."
-                            isteps := isteps + 0
-                            imission_lost := imission_lost + 1
-                            %implement end of the game when ilife_scale is zero or less
-                        end if
-                        if ianswer4 not= "hide" and ianswer4 not= "attack" and ianswer4 not= "give" then
-                            put "Invalid command. Try again."
-                        end if
-                        exit when ianswer4 = "hide" or ianswer4 = "attack" or ianswer4 = "give"
-                        exit when imission_lost = 1
-                    end loop
+                    end if
                 end if
             end if
         end if
@@ -396,145 +460,146 @@ loop
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     if ianswer = "west" then
-
-        if ix = 4 and iy < 4 then         %add same if statement to all four sides
+        if ix = 4 and iy < 4 then %add same if statement to all four sides
             put "There is a cliff in front of you. You can't climb on it."
         else
             if ix = 1 then
                 put istatement
             else
-                ix := ix - 1
-                isteps := isteps + 1
+                if CanIGoThroughMountain ("west") then
+                    ix := ix - 1
+                    isteps := isteps + 1
 
-                randint (irope, 1, 4)
-                if iobjects = 1 then
-                    irope := 0
-                end if
-                if irope = inum1 then
-                    put "You found a rope."
-                    loop
-                        put "Would you like to take a rope?"
-                        get ianswer2
-                        if ianswer2 = "yes" then
-                            iobjects := iobjects + 1
-                            put "You took the rope."
-                        end if
-                        if ianswer2 = "no" then
-                            iobjects := iobjects + 0
-                            put "You didn't take the rope. Such a pity. It was an Elvish rope."
-                        end if
-                        if ianswer2 not= "yes" and ianswer2 not= "no" then
-                            iobjects := iobjects + 0
-                            put "Invalid answer"
-                        end if
-                        exit when ianswer2 = "yes" or ianswer2 = "no"
-                    end loop
-                end if
-            end if
-        end if
-        if ix > 3 or iy > 3 then     %add x
-            randint (iforces, 1, 4)
-            if iforces = inum2 or iforces = inum3 then
-                randint (icreature, 3, 5)
-
-                if icreature = 3 then
-                    put "There are vile Orcs blocking the path. You have two options: "
-                    loop
-                        put "a) Retreat - move to where you came from."
-                        put "b) Attack - fight Sauron's forces."
-                        get ianswer3
-                        if ianswer3 = "retreat" then
-                            ix := ix + 1
-                        end if
-                        if ianswer3 = "attack" then
-                            ix := ix + 0
-                            isteps := isteps + 0
-                            randint (ipoints_lost, 1, 10)
-                            ilife_scale := ilife_scale - ipoints_lost
-                            if ilife_scale > 0 then
-                                put "You sucessfully defeated all of the Orcs. During the fight you lost ", ipoints_lost, " points."
-                            else
-                                put "You were defeated."
-                                imission_lost := imission_lost + 1
-                                %implement end of the game when ilife_scale is zero or less
-                            end if
-                        end if
-                        if ianswer3 not= "retreat" and ianswer3 not= "attack" then
-                            put "Invalid command."
-                        end if
-                        exit when ianswer3 = "retreat" or ianswer3 = "attack"
-                    end loop
-                end if
-
-                if icreature = 4 then
-                    put "You were attacked by a horde of Goblins." ..
-                    put "You are trapped. Your only option is to defeat them."
-                    delay (3000)
-                    ix := ix + 0
-                    isteps := isteps + 0
-                    randint (ipoints_lost, 1, 15)
-                    ilife_scale := ilife_scale - ipoints_lost
-                    put "You defeated the enemy. During the fight you lost ", ipoints_lost, " points."
-                    if ilife_scale <= 0 then
-                        put "You were defeated. You run out of energy. You were so close to winning."
-                        %game ends if ilife_points <= 0
-                        imission_lost := imission_lost + 1
+                    randint (irope, 1, 4)
+                    if iobjects = 1 then
+                        irope := 0
                     end if
-                end if
+                    if irope = inum1 then
+                        put "You found a rope."
+                        loop
+                            put "Would you like to take a rope?"
+                            get ianswer2
+                            if ianswer2 = "yes" then
+                                iobjects := iobjects + 1
+                                put "You took the rope."
+                            end if
+                            if ianswer2 = "no" then
+                                iobjects := iobjects + 0
+                                put "You didn't take the rope. Such a pity. It was an Elvish rope."
+                            end if
+                            if ianswer2 not= "yes" and ianswer2 not= "no" then
+                                iobjects := iobjects + 0
+                                put "Invalid answer"
+                            end if
+                            exit when ianswer2 = "yes" or ianswer2 = "no"
+                        end loop
+                    end if
+                    if ix > 3 or iy > 3 then %add x
+                        randint (iforces, 1, 4)
+                        if iforces = inum2 or iforces = inum3 then
+                            randint (icreature, 3, 5)
 
-                if icreature = 5 then
-                    put "There is a Ringwraith on your way. You have a few options, which can save you"
-                    put "from the Nazgul."
-                    loop
-                        put "a) Hide - put the One Ring on. "
-                        put "b) Attack - attack the Ringwraith."
-                        put "c) Give - give the Ring to the Nazgul."
-                        get ianswer4
-                        if ianswer4 = "hide" then
-                            ix := ix + 0
-                            isteps := isteps + 0
-                            randint (ipoints_lost, 10, 30)
-                            ilife_scale := ilife_scale - ipoints_lost
-                            if ipoints_lost > 15 and ilife_scale > 0 then
-                                put "Even with the Ring on Nazgul was able to see you. You were able to win the round. Though, you sustained heavy damage. You lost " ..
-                                put ipoints_lost, "points."
-                            else
-                                if ipoints_lost <= 15 and ilife_scale > 0 then
-                                    put "Ringwraith can see you even when you are invisible to everyone. Still, you were able to defeat him. During the fight you lost " ..
-                                    put ipoints_lost, " life points. Not bad at all, considering you were fighting a Nazgul."
+                            if icreature = 3 then
+                                put "There are vile Orcs blocking the path. You have two options: "
+                                loop
+                                    put "a) Retreat - move to where you came from."
+                                    put "b) Attack - fight Sauron's forces."
+                                    get ianswer3
+                                    if ianswer3 = "retreat" then
+                                        ix := ix + 1
+                                    end if
+                                    if ianswer3 = "attack" then
+                                        ix := ix + 0
+                                        isteps := isteps + 0
+                                        randint (ipoints_lost, 1, 10)
+                                        ilife_scale := ilife_scale - ipoints_lost
+                                        if ilife_scale > 0 then
+                                            put "You sucessfully defeated all of the Orcs. During the fight you lost ", ipoints_lost, " points."
+                                        else
+                                            put "You were defeated."
+                                            imission_lost := imission_lost + 1
+                                            %implement end of the game when ilife_scale is zero or less
+                                        end if
+                                    end if
+                                    if ianswer3 not= "retreat" and ianswer3 not= "attack" then
+                                        put "Invalid command."
+                                    end if
+                                    exit when ianswer3 = "retreat" or ianswer3 = "attack"
+                                end loop
+                            end if
+
+                            if icreature = 4 then
+                                put "You were attacked by a horde of Goblins." ..
+                                put "You are trapped. Your only option is to defeat them."
+                                delay (3000)
+                                ix := ix + 0
+                                isteps := isteps + 0
+                                randint (ipoints_lost, 1, 15)
+                                ilife_scale := ilife_scale - ipoints_lost
+                                put "You defeated the enemy. During the fight you lost ", ipoints_lost, " points."
+                                if ilife_scale <= 0 then
+                                    put "You were defeated. You run out of energy. You were so close to winning."
+                                    %game ends if ilife_points <= 0
+                                    imission_lost := imission_lost + 1
                                 end if
                             end if
-                            if ilife_scale <= 0 then
-                                put "You were defeated."
-                                imission_lost := imission_lost + 1
-                                %implement end of the game when ilife_scale is zero or less
+
+                            if icreature = 5 then
+                                put "There is a Ringwraith on your way. You have a few options, which can save you"
+                                put "from the Nazgul."
+                                loop
+                                    put "a) Hide - put the One Ring on. "
+                                    put "b) Attack - attack the Ringwraith."
+                                    put "c) Give - give the Ring to the Nazgul."
+                                    get ianswer4
+                                    if ianswer4 = "hide" then
+                                        ix := ix + 0
+                                        isteps := isteps + 0
+                                        randint (ipoints_lost, 10, 30)
+                                        ilife_scale := ilife_scale - ipoints_lost
+                                        if ipoints_lost > 15 and ilife_scale > 0 then
+                                            put "Even with the Ring on Nazgul was able to see you. You were able to win the round. Though, you sustained heavy damage. You lost " ..
+                                            put ipoints_lost, "points."
+                                        else
+                                            if ipoints_lost <= 15 and ilife_scale > 0 then
+                                                put "Ringwraith can see you even when you are invisible to everyone. Still, you were able to defeat him. During the fight you lost " ..
+                                                put ipoints_lost, " life points. Not bad at all, considering you were fighting a Nazgul."
+                                            end if
+                                        end if
+                                        if ilife_scale <= 0 then
+                                            put "You were defeated."
+                                            imission_lost := imission_lost + 1
+                                            %implement end of the game when ilife_scale is zero or less
+                                        end if
+                                    end if
+                                    if ianswer4 = "attack" then
+                                        ix := ix + 0
+                                        isteps := isteps + 0
+                                        randint (ipoints_lost, 10, 20)
+                                        ilife_scale := ilife_scale - ipoints_lost
+                                        if ilife_scale > 0 then
+                                            put "You were able to defeat the mighty Nazgul. It cost you ", ipoints_lost, " points."
+                                        else
+                                            put "You were defeated."
+                                            imission_lost := imission_lost + 1
+                                            %implement end of the game when ilife_scale is zero or less
+                                        end if
+                                    end if
+                                    if ianswer4 = "give" then
+                                        put "You lost. Middle-earth will get thrown into an Age OF Darkness."
+                                        isteps := isteps + 0
+                                        imission_lost := imission_lost + 1
+                                        %implement end of the game when ilife_scale is zero or less
+                                    end if
+                                    if ianswer4 not= "hide" and ianswer4 not= "attack" and ianswer4 not= "give" then
+                                        put "Invalid command. Try again."
+                                    end if
+                                    exit when ianswer4 = "hide" or ianswer4 = "attack" or ianswer4 = "give"
+                                    exit when imission_lost = 1
+                                end loop
                             end if
                         end if
-                        if ianswer4 = "attack" then
-                            ix := ix + 0
-                            isteps := isteps + 0
-                            randint (ipoints_lost, 10, 20)
-                            ilife_scale := ilife_scale - ipoints_lost
-                            if ilife_scale > 0 then
-                                put "You were able to defeat the mighty Nazgul. It cost you ", ipoints_lost, " points."
-                            else
-                                put "You were defeated."
-                                imission_lost := imission_lost + 1
-                                %implement end of the game when ilife_scale is zero or less
-                            end if
-                        end if
-                        if ianswer4 = "give" then
-                            put "You lost. Middle-earth will get thrown into an Age OF Darkness."
-                            isteps := isteps + 0
-                            imission_lost := imission_lost + 1
-                            %implement end of the game when ilife_scale is zero or less
-                        end if
-                        if ianswer4 not= "hide" and ianswer4 not= "attack" and ianswer4 not= "give" then
-                            put "Invalid command. Try again."
-                        end if
-                        exit when ianswer4 = "hide" or ianswer4 = "attack" or ianswer4 = "give"
-                        exit when imission_lost = 1
-                    end loop
+                    end if
                 end if
             end if
         end if
@@ -560,138 +625,140 @@ loop
                     end if
                 end if
             else
-                ix := ix + 1
-                isteps := isteps + 1
+                if CanIGoThroughMountain ("east") then
+                    ix := ix + 1
+                    isteps := isteps + 1
 
-                randint (irope, 1, 4)
-                if iobjects = 1 then
-                    irope := 0
-                end if
-                if irope = inum1 then
-                    put "You found a rope."
-                    loop
-                        put "Would you like to take a rope?"
-                        get ianswer2
-                        if ianswer2 = "yes" then
-                            iobjects := iobjects + 1
-                            put "You took the rope."
-                        end if
-                        if ianswer2 = "no" then
-                            iobjects := iobjects + 0
-                            put "You didn't take the rope."
-                        end if
-                        if ianswer2 not= "yes" and ianswer2 not= "no" then
-                            iobjects := iobjects + 0
-                            put "Invalid answer"
-                        end if
-                        exit when ianswer2 = "yes" or ianswer2 = "no"
-                    end loop
-                end if
-            end if
-        end if
-        if ix > 3 or iy > 3 then         %add x
-            randint (iforces, 1, 4)
-            if iforces = inum2 or iforces = inum3 then
-                randint (icreature, 3, 5)
-
-                if icreature = 3 then
-                    put "There are vile Orcs blocking the path. You have two options: "
-                    loop
-                        put "a) Retreat - move to where you came from."
-                        put "b) Attack - fight Sauron's forces. It is possible to lose life points!"
-                        get ianswer3
-                        if ianswer3 = "retreat" then
-                            ix := ix - 1
-                        end if
-                        if ianswer3 = "attack" then
-                            ix := ix + 0
-                            isteps := isteps + 0
-                            randint (ipoints_lost, 1, 10)
-                            ilife_scale := ilife_scale - ipoints_lost
-                            if ilife_scale > 0 then
-                                put "You sucessfully defeated all of the Orcs. During the fight you lost ", ipoints_lost, " points."
-                            else
-                                put "You were defeated."
-                                imission_lost := imission_lost + 1
-                                %implement end of the game when ilife_scale is zero or less
-                            end if
-                        end if
-                        if ianswer3 not= "retreat" and ianswer3 not= "attack" then
-                            put "Invalid command."
-                        end if
-                        exit when ianswer3 = "retreat" or ianswer3 = "attack"
-                    end loop
-                end if
-
-                if icreature = 4 then
-                    put "You were attacked by a horde of Goblins." ..
-                    put "You are trapped. Your only option is to defeat them."
-                    delay (3000)
-                    ix := ix + 0
-                    isteps := isteps + 0
-                    randint (ipoints_lost, 1, 15)
-                    ilife_scale := ilife_scale - ipoints_lost
-                    put "You defeated the enemy. During the fight you lost ", ipoints_lost, " points."
-                    if ilife_scale <= 0 then
-                        put "You were defeated. Therefore you lost the game."
-                        %game ends if ilife_points <= 0
-                        imission_lost := imission_lost + 1
+                    randint (irope, 1, 4)
+                    if iobjects = 1 then
+                        irope := 0
                     end if
-                end if
+                    if irope = inum1 then
+                        put "You found a rope."
+                        loop
+                            put "Would you like to take a rope?"
+                            get ianswer2
+                            if ianswer2 = "yes" then
+                                iobjects := iobjects + 1
+                                put "You took the rope."
+                            end if
+                            if ianswer2 = "no" then
+                                iobjects := iobjects + 0
+                                put "You didn't take the rope."
+                            end if
+                            if ianswer2 not= "yes" and ianswer2 not= "no" then
+                                iobjects := iobjects + 0
+                                put "Invalid answer"
+                            end if
+                            exit when ianswer2 = "yes" or ianswer2 = "no"
+                        end loop
+                    end if
+                    if ix > 3 or iy > 3 then %add x
+                        randint (iforces, 1, 4)
+                        if iforces = inum2 or iforces = inum3 then
+                            randint (icreature, 3, 5)
 
-                if icreature = 5 then
-                    put "There is a Ringwraith on your way. You have a few options, which can save you"
-                    put "from the Nazgul."
-                    loop
-                        put "a) Hide - put the One Ring on. "
-                        put "b) Attack - attack the Ringwraith."
-                        put "c) Give - give the Ring to the Nazgul."
-                        get ianswer4
-                        if ianswer4 = "hide" then
-                            ix := ix + 0
-                            isteps := isteps + 0
-                            randint (ipoints_lost, 10, 30)
-                            ilife_scale := ilife_scale - ipoints_lost
-                            if ipoints_lost > 15 and ilife_scale > 0 then
-                                put "Even with the Ring on Nazgul was able to see you. You were able to win the round. Though, you sustained heavy damage. You lost " ..
-                                put ipoints_lost, "points."
-                            else
-                                if ipoints_lost <= 15 and ilife_scale > 0 then
-                                    put "Ringwraith can see you even when you are invisible to everyone. Still, you were able to defeat him. During the fight you lost " ..
-                                    put ipoints_lost, " life points. Not bad at all, considering you were fighting a Nazgul."
+                            if icreature = 3 then
+                                put "There are vile Orcs blocking the path. You have two options: "
+                                loop
+                                    put "a) Retreat - move to where you came from."
+                                    put "b) Attack - fight Sauron's forces. It is possible to lose life points!"
+                                    get ianswer3
+                                    if ianswer3 = "retreat" then
+                                        ix := ix - 1
+                                    end if
+                                    if ianswer3 = "attack" then
+                                        ix := ix + 0
+                                        isteps := isteps + 0
+                                        randint (ipoints_lost, 1, 10)
+                                        ilife_scale := ilife_scale - ipoints_lost
+                                        if ilife_scale > 0 then
+                                            put "You sucessfully defeated all of the Orcs. During the fight you lost ", ipoints_lost, " points."
+                                        else
+                                            put "You were defeated."
+                                            imission_lost := imission_lost + 1
+                                            %implement end of the game when ilife_scale is zero or less
+                                        end if
+                                    end if
+                                    if ianswer3 not= "retreat" and ianswer3 not= "attack" then
+                                        put "Invalid command."
+                                    end if
+                                    exit when ianswer3 = "retreat" or ianswer3 = "attack"
+                                end loop
+                            end if
+
+                            if icreature = 4 then
+                                put "You were attacked by a horde of Goblins." ..
+                                put "You are trapped. Your only option is to defeat them."
+                                delay (3000)
+                                ix := ix + 0
+                                isteps := isteps + 0
+                                randint (ipoints_lost, 1, 15)
+                                ilife_scale := ilife_scale - ipoints_lost
+                                put "You defeated the enemy. During the fight you lost ", ipoints_lost, " points."
+                                if ilife_scale <= 0 then
+                                    put "You were defeated. Therefore you lost the game."
+                                    %game ends if ilife_points <= 0
+                                    imission_lost := imission_lost + 1
                                 end if
                             end if
-                            if ilife_scale <= 0 then
-                                put "You were defeated."
-                                imission_lost := imission_lost + 1
-                                %implement end of the game when ilife_scale is zero or less
+
+                            if icreature = 5 then
+                                put "There is a Ringwraith on your way. You have a few options, which can save you"
+                                put "from the Nazgul."
+                                loop
+                                    put "a) Hide - put the One Ring on. "
+                                    put "b) Attack - attack the Ringwraith."
+                                    put "c) Give - give the Ring to the Nazgul."
+                                    get ianswer4
+                                    if ianswer4 = "hide" then
+                                        ix := ix + 0
+                                        isteps := isteps + 0
+                                        randint (ipoints_lost, 10, 30)
+                                        ilife_scale := ilife_scale - ipoints_lost
+                                        if ipoints_lost > 15 and ilife_scale > 0 then
+                                            put "Even with the Ring on Nazgul was able to see you. You were able to win the round. Though, you sustained heavy damage. You lost " ..
+                                            put ipoints_lost, "points."
+                                        else
+                                            if ipoints_lost <= 15 and ilife_scale > 0 then
+                                                put "Ringwraith can see you even when you are invisible to everyone. Still, you were able to defeat him. During the fight you lost " ..
+                                                put ipoints_lost, " life points. Not bad at all, considering you were fighting a Nazgul."
+                                            end if
+                                        end if
+                                        if ilife_scale <= 0 then
+                                            put "You were defeated."
+                                            imission_lost := imission_lost + 1
+                                            %implement end of the game when ilife_scale is zero or less
+                                        end if
+                                    end if
+                                    if ianswer4 = "attack" then
+                                        ix := ix + 0
+                                        isteps := isteps + 0
+                                        randint (ipoints_lost, 10, 20)
+                                        ilife_scale := ilife_scale - ipoints_lost
+                                        if ilife_scale > 0 then
+                                            put "You were able to defeat the mighty Nazgul. It cost you ", ipoints_lost, " points."
+                                        else
+                                            put "You were defeated."
+                                            imission_lost := imission_lost + 1
+                                            %implement end of the game when ilife_scale is zero or less
+                                        end if
+                                    end if
+                                    if ianswer4 = "give" then
+                                        put "You lost. Middle-earth will get thrown into an Age of Darkness."
+                                        isteps := isteps + 0
+                                        imission_lost := imission_lost + 1
+                                        %implement end of the game when ilife_scale is zero or less
+                                    end if
+                                    if ianswer4 not= "hide" and ianswer4 not= "attack" and ianswer4 not= "give" then
+                                        put "Invalid command. Try again."
+                                    end if
+                                    exit when ianswer4 = "hide" or ianswer4 = "attack" or ianswer4 = "give"
+                                    exit when imission_lost = 1
+                                end loop
                             end if
                         end if
-                        if ianswer4 = "attack" then
-                            ix := ix + 0
-                            isteps := isteps + 0
-                            randint (ipoints_lost, 10, 20)
-                            ilife_scale := ilife_scale - ipoints_lost
-                            if ilife_scale > 0 then
-                                put "You were able to defeat the mighty Nazgul. It cost you ", ipoints_lost, " points."
-                            else
-                                put "You were defeated."
-                                imission_lost := imission_lost + 1
-                                %implement end of the game when ilife_scale is zero or less
-                            end if
-                        end if
-                        if ianswer4 = "give" then
-                            put "You lost. Middle-earth will get thrown into an Age of Darkness."
-                            isteps := isteps + 0
-                            imission_lost := imission_lost + 1
-                            %implement end of the game when ilife_scale is zero or less
-                        end if
-                        if ianswer4 not= "hide" and ianswer4 not= "attack" and ianswer4 not= "give" then
-                            put "Invalid command. Try again."
-                        end if
-                        exit when ianswer4 = "hide" or ianswer4 = "attack" or ianswer4 = "give"
-                        exit when imission_lost = 1
-                    end loop
+                    end if
                 end if
             end if
         end if
