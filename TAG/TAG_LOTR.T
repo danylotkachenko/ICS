@@ -64,7 +64,8 @@ function CanIGoThroughMountain (direction : string) : boolean
         put "In north direction you can see Mount Doom. The only thing left to do is ascend the mountain and destroy the Ring."
     end if
     if ix = 7 and iy > 7 then
-        put "You finally reached Mount Doom. Now you have to find a safe path to the entrance."
+        put "To the east there are slopes of Moun Doom. You finally reached it."
+        put "Now you have to find a safe path to the entrance."
     end if
 
     if (direction = "east") then
@@ -148,6 +149,8 @@ loop
         put "*" ..
     end for
     put " "
+    put "x-value: ", ix
+    put "y-value: ", iy
 
     put "Where would you like to go?"
     get ianswer
