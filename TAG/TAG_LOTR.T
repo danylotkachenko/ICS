@@ -9,7 +9,7 @@ var icreature : int %generates 1 of 3 different types of enemies
 var inum1 : int := 1 %correct condition for generating a rope
 var inum2 : int := 2 %correct condition for generating an enemy
 var inum3 : int := 3 %another correct condition for generating an enemy
-var inum4 : int := 4 
+var inum4 : int := 4
 var ianswer2 : string %true or false condition, if it is true user takes the rope, if it is wrong user doesn't take it
 var iobjects : int := 0 %condition which makes it impossble to take a rope more than once
 var icommand : string %condition which allows user to get down from the cliff
@@ -50,9 +50,9 @@ mountain (10, 9) := 2
 mountain (9, 9) := 1
 mountain (9, 8) := 2
 mountain (8, 9) := 1
-mountain (8, 8) := 0
-mountain (8, 10) := 0
-mountain (10, 8) := 0
+%mountain (8, 8) := 0
+%mountain (8, 10) := 0
+%mountain (10, 8) := 0
 %END MOUNTAIN DEFINITION
 
 function CanIGoThroughMountain (direction : string) : boolean
@@ -101,6 +101,7 @@ procedure PlayAgain
     View.Set ("nocursor")
     Text.ColourBack (red)
     cls
+    play ("4<B>4D2E4G4A8B8A4G4F+1E4<B>4E4F+1F+4F+4G4A8G8F+1E")
     Font.Draw ("THE LORD OF THE RINGS - LABYRINTH", 9, 205, ifont, black)
     Font.Draw ("By Danylo Tkachenko", 196, 18, ifont2, black)
     getch (ch)
@@ -144,6 +145,7 @@ procedure PlayAgain
     cls
 
     loop
+        cls
         %put " "
         put "Life scale: ", ilife_scale
         for icount : 0 .. ilife_scale div 10
@@ -155,7 +157,7 @@ procedure PlayAgain
 
         put "Where would you like to go?"
         get ianswer
-%SOUTH DIRECTION BEGINS
+        %SOUTH DIRECTION BEGINS
         if ianswer = "south" then
             if iy = 4 and ix < 4 then %add same if statement to four other sides
                 put "There is a tall cliff in front of you. You can't climb on it."
@@ -303,9 +305,9 @@ procedure PlayAgain
                 end if
             end if
         end if
-%SOUTH DIRECTION ENDS
+        %SOUTH DIRECTION ENDS
 
-%NORTH DIRECTION BEGINS
+        %NORTH DIRECTION BEGINS
         if ianswer = "north" then
 
             if ix = 10 and iy = 10 then
@@ -495,9 +497,9 @@ procedure PlayAgain
                 end if
             end if
         end if
-%NORTH DIRECTION ENDS
+        %NORTH DIRECTION ENDS
 
-%WEST DIRECTION BEGINS
+        %WEST DIRECTION BEGINS
         if ianswer = "west" then
             if ix = 4 and iy < 4 then     %add same if statement to all four sides
                 put "There is a cliff in front of you. You can't climb on it."
@@ -645,9 +647,9 @@ procedure PlayAgain
                 end if
             end if
         end if
-%WEST DIRECTION ENDS
-       
-%EAST DIRECTION BEGINS
+        %WEST DIRECTION ENDS
+
+        %EAST DIRECTION BEGINS
         if ianswer = "east" then
 
             if ix = 10 and iy = 10 then
@@ -836,7 +838,7 @@ procedure PlayAgain
                 end if
             end if
         end if
-%EAST DIRECTION ENDS
+        %EAST DIRECTION ENDS
 
         exit when ianswer = isentinel or imission_lost = 1 or igame_won = 1
         %exit when imission_lost = 1
@@ -904,5 +906,6 @@ put "THE LORD OF THE RINGS - LABYRINTH"
 locate (3, 30)
 put "By Danylo Tkachenko"
 Font.Draw ("THANK YOU FOR PLAYING", 98, 200, ifont, red)
+play ("4<B>4D2E4G4A8B8A4G4F+1E4<B>4E4F+1F+4F+4G4A8G8F+1E")
 %COMMENTS SHOULD BE ADDED,WHEN USER CHOSES A DIRECTION TO GO IN
 %CLS FUNCTION SHOULD BE ADDED SO ONLY CURRENT DIRECTION IS SHOWN
