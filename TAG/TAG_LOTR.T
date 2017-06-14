@@ -847,7 +847,7 @@ procedure PlayAgain
         put "   The Age of Men is over. The time of the Orcs has come. - Gothmog, Orc Leader"
     else
         if ianswer = isentinel then
-            Text.Colour (green)
+            Text.Colour (yellow)
             %put "Would you like to play again?"
         else
             if igame_won = 1 then
@@ -863,7 +863,7 @@ procedure PlayAgain
     put "x-value is ", ix
     put "y-value is ", iy
 end PlayAgain
-
+%
 procedure InitGame
     isteps := 0 %calculates # of steps taken
     ix := 1
@@ -877,17 +877,30 @@ end InitGame
 loop
     InitGame
     PlayAgain
-    put "WOULD YOU LIKE TO PLAY AGAIN?"
-    get ianswer7
-    if ianswer7 = "yes" then
-        put "So be it!"
-    else
+    loop
+        put "WOULD YOU LIKE TO PLAY AGAIN?"
+        get ianswer7
+        if ianswer7 = "yes" then
+            put "So be it!"
+        end if
+        %else
         if ianswer7 = "no" then
             put "Okay."
-        else
+        end if
+        %    else
+        if ianswer7 not= "yes" and ianswer7 not= "no" then
             put "Invalid answer."
         end if
-    end if
+        %    end if
+        %end if
+        exit when ianswer7 = "no" or ianswer7 = "yes"
+    end loop
     exit when ianswer7 = "no"
 end loop
-put "You quit the game"
+cls
+Text.Colour (yellow)
+locate (2, 23)
+put "THE LORD OF THE RINGS - LABYRINTH"
+locate (3, 30)
+put "By Danylo Tkachenko"
+Font.Draw ("THANK YOU FOR PLAYING", 98, 200, ifont, red)
