@@ -1,4 +1,16 @@
-%Game board (10 by 10)
+%Filename : TAG_LOTR
+%
+%Program : text adventure game
+%
+%Program resembles a maze. User tries to get from one side of the field to the other. On his way he encounters different obstacles..
+%and finds different objects that might help him
+%
+%Programmer : Danylo Tkachenko
+%
+%Class : ICS201/02 (Mr.Sze)
+%
+%Due Date : June 15
+
 var isentinel : string := "stop" %exits the game
 var ianswer : string %direction in which user wants to go
 var isteps : int := 0 %calculates # of steps taken
@@ -16,7 +28,6 @@ var icommand : string %condition which allows user to get down from the cliff
 var icommand_correct : string := "use" %correct answer to the icommand, if it is inputted user gets down from the cliff
 var ianswer3 : string %gets one of two possible answers, whether user wants to fight or retreat
 var ianswer4 : string %gets one of three possible answers, combat options
-%var ianswer5 : string %tells whether user wants to play a game
 var ianswer6 : string
 var ianswer7 : string
 var ipoints_lost : int %random command, which generates number of points lost
@@ -27,13 +38,8 @@ var imax_count : int := 10 %starting amount of life points, one asteriks stands 
 var igame_won : int := 0
 var ifont : int := Font.New ("Times New Roman:24:bold")
 var ifont2 : int := Font.New ("Times New Roman:18:bold")
-
 var istatement : string := "You can't go that way. You are on the very edge of the field."
-var istatement2 : string
-var istatement3 : string
-var istatement4 : string
-var istatement5 : string
-var istatement6 : string
+
 
 %BEGIN MOUNTAIN DEFINITION
 var mountain : array 1 .. 10, 1 .. 10 of int
@@ -50,13 +56,9 @@ mountain (10, 9) := 2
 mountain (9, 9) := 1
 mountain (9, 8) := 2
 mountain (8, 9) := 1
-%mountain (8, 8) := 0
-%mountain (8, 10) := 0
-%mountain (10, 8) := 0
 %END MOUNTAIN DEFINITION
 
 function CanIGoThroughMountain (direction : string) : boolean
-
     var newX : int
     var newY : int
 
@@ -66,7 +68,7 @@ function CanIGoThroughMountain (direction : string) : boolean
     end if
     if ix = 7 and iy > 7 then
         put "To the east you can see slopes of Mount Doom. You finally reached it."
-        put "Now you have to find a safe path to the entrance."
+        put "Now you have to find a safe path to the top."
     end if
 
     if (direction = "east") then
@@ -85,9 +87,6 @@ function CanIGoThroughMountain (direction : string) : boolean
         newX := ix
         newY := iy - 1
     end if
-
-    %put "Coordinates: ", ix, " ", iy
-    %put "array indecies: ", newX, " ", newY
     if (abs (mountain (newX, newY) - mountain (ix, iy)) > 1) then
         put "It is impossible to go that way. Let's find another path."
         result false
@@ -96,8 +95,18 @@ function CanIGoThroughMountain (direction : string) : boolean
     end if
 end CanIGoThroughMountain
 
-procedure PlayAgain
+procedure ShowAdvanceMessage
+    var i : int
+    var newHexMessages : array 1 .. 4 of string := init ("The chill air flows over you, rising as you go.",
+        "The only green around is the scum of livid weed on the dark greasy surfaces of the sullen waters.",
+        "It is a barren wasteland, riddled with fire, ash, and dust. The very air you breathe is a poisonous fume.",
+        "There is evil there that does not sleep. The great Eye is ever watchful.")
+    randint (i, 1, 4)
+    put newHexMessages (i)
+end ShowAdvanceMessage
 
+procedure PlayAgain
+    setscreen ("graphics")
     View.Set ("nocursor")
     Text.ColourBack (red)
     cls
@@ -106,7 +115,6 @@ procedure PlayAgain
     Font.Draw ("By Danylo Tkachenko", 196, 18, ifont2, black)
     getch (ch)
 
-    %setscreen ("graphics:800;600")
     Text.Colour (yellow)
     Text.ColourBack (black)
     cls
@@ -143,23 +151,26 @@ procedure PlayAgain
     put "To start the game press any key"
     getch (ch)
     cls
+    setscreen ("graphics:800;600")
+    Text.Colour (yellow)
+    Text.ColourBack (black)
+    cls
 
     loop
-        cls
-        %put " "
-        put "Life scale: ", ilife_scale
+        Text.Colour (green)
+        put " "
+        put "# of steps: ", isteps
+        put "Life scale: "
         for icount : 0 .. ilife_scale div 10
             put "*" ..
         end for
         put " "
-        put "x-value: ", ix
-        put "y-value: ", iy
-
+        Text.Colour (yellow)
         put "Where would you like to go?"
         get ianswer
         %SOUTH DIRECTION BEGINS
         if ianswer = "south" then
-            if iy = 4 and ix < 4 then %add same if statement to four other sides
+            if iy = 4 and ix < 4 then 
                 put "There is a tall cliff in front of you. You can't climb on it."
             else
                 if iy = 1 then
@@ -168,6 +179,7 @@ procedure PlayAgain
                     if CanIGoThroughMountain ("south") then
                         iy := iy - 1
                         isteps := isteps + 1
+                        ShowAdvanceMessage
                         randint (irope, 1, 4)
                         if iobjects = 1 then
                             irope := 0
@@ -192,7 +204,7 @@ procedure PlayAgain
                                 exit when ianswer2 = "yes" or ianswer2 = "no"
                             end loop
                         end if
-                        if iy > 3 or ix > 3 then     %add x
+                        if iy > 3 or ix > 3 then
                             randint (iforces, 1, 4)
                             if iforces = inum2 or iforces = inum3 then
                                 randint (icreature, 3, 5)
@@ -238,14 +250,12 @@ procedure PlayAgain
                                     put "You defeated the enemy. During the fight you lost ", ipoints_lost, " points."
                                     if ilife_scale <= 0 then
                                         put "You weren't able to win. You run out of energy."
-                                        %game ends if ilife_points <= 0
                                         imission_lost := imission_lost + 1
                                     end if
                                 end if
 
                                 if icreature = 5 then
                                     put "There is a Ringwraith on your way. The only options that can save you are:"
-                                    %put "from the Nazgul."
                                     loop
                                         put "a) Hide - put the One Ring on. "
                                         put "b) Attack - attack the Ringwraith."
@@ -296,7 +306,6 @@ procedure PlayAgain
                                             put "Invalid command. Try again."
                                         end if
                                         exit when ianswer4 = "hide" or ianswer4 = "attack" or ianswer4 = "give" or imission_lost = 1
-                                        %exit when imission_lost = 1
                                     end loop
                                 end if
                             end if
@@ -312,10 +321,11 @@ procedure PlayAgain
 
             if ix = 10 and iy = 10 then
                 loop
-                    put "You reached your final destination. You have to throw the ring into The Crack of Doom. Now, would you like to do so?"
+                    put "You reached your final destination. You have to throw the ring into The Crack of Doom. Now, would "
+                    put "you like to do so?"
                     get ianswer6
                     if ianswer6 = "yes" then
-                        put "You destroyed the ring!"
+                        put "You destroyed the One Ring and saved all of the free people of Middle-earth."
                         igame_won := igame_won + 1
                     end if
                     if ianswer6 = "no" then
@@ -338,7 +348,7 @@ procedure PlayAgain
                     end if
                     exit when igame_won = 1
                 end loop
-            else %substituted end if with else in order not to display istatement, moved end if to the end
+            else 
                 if iy = 10 then
                     put istatement
                 else
@@ -359,15 +369,15 @@ procedure PlayAgain
                         if CanIGoThroughMountain ("north") then
                             iy := iy + 1
                             isteps := isteps + 1
-
+                            ShowAdvanceMessage
                             randint (irope, 1, 4)
                             if iobjects = 1 then
                                 irope := 0
                             end if
                             if irope = inum1 or irope = inum4 then
-                                put "You found a rope."
+                                put "You accidentally found a rope. It was lying behind a rock you passed."
                                 loop
-                                    put "Would you like to take a rope?"
+                                    put "Would you like to take it?"
                                     get ianswer2
                                     if ianswer2 = "yes" then
                                         iobjects := iobjects + 1
@@ -384,7 +394,7 @@ procedure PlayAgain
                                     exit when ianswer2 = "yes" or ianswer2 = "no"
                                 end loop
                             end if
-                            if iy > 3 or ix > 3 then %add x
+                            if iy > 3 or ix > 3 then
                                 randint (iforces, 1, 4)
                                 if iforces = inum2 or iforces = inum3 then
                                     randint (icreature, 3, 5)
@@ -429,7 +439,6 @@ procedure PlayAgain
                                         put "You defeated the enemy. During the fight you lost ", ipoints_lost, " points."
                                         if ilife_scale <= 0 then
                                             put "You were defeated. Now Sauron will rule the middle-earth."
-                                            %game ends if ilife_points <= 0
                                             imission_lost := imission_lost + 1
                                         end if
                                     end if
@@ -487,7 +496,6 @@ procedure PlayAgain
                                                 put "Invalid command. Try again."
                                             end if
                                             exit when ianswer4 = "hide" or ianswer4 = "attack" or ianswer4 = "give" or imission_lost = 1
-                                            %exit when imission_lost = 1
                                         end loop
                                     end if
                                 end if
@@ -501,7 +509,7 @@ procedure PlayAgain
 
         %WEST DIRECTION BEGINS
         if ianswer = "west" then
-            if ix = 4 and iy < 4 then     %add same if statement to all four sides
+            if ix = 4 and iy < 4 then
                 put "There is a cliff in front of you. You can't climb on it."
             else
                 if ix = 1 then
@@ -510,7 +518,7 @@ procedure PlayAgain
                     if CanIGoThroughMountain ("west") then
                         ix := ix - 1
                         isteps := isteps + 1
-
+                        ShowAdvanceMessage
                         randint (irope, 1, 4)
                         if iobjects = 1 then
                             irope := 0
@@ -535,7 +543,7 @@ procedure PlayAgain
                                 exit when ianswer2 = "yes" or ianswer2 = "no"
                             end loop
                         end if
-                        if ix > 3 or iy > 3 then     %add x
+                        if ix > 3 or iy > 3 then
                             randint (iforces, 1, 4)
                             if iforces = inum2 or iforces = inum3 then
                                 randint (icreature, 3, 5)
@@ -580,7 +588,6 @@ procedure PlayAgain
                                     put "You defeated the enemy. During the fight you lost ", ipoints_lost, " points."
                                     if ilife_scale <= 0 then
                                         put "You run out of energy. You were so close!"
-                                        %game ends if ilife_points <= 0
                                         imission_lost := imission_lost + 1
                                     end if
                                 end if
@@ -638,7 +645,6 @@ procedure PlayAgain
                                             put "Invalid command. Try again."
                                         end if
                                         exit when ianswer4 = "hide" or ianswer4 = "attack" or ianswer4 = "give" or imission_lost = 1
-                                        %exit when imission_lost = 1
                                     end loop
                                 end if
                             end if
@@ -657,7 +663,7 @@ procedure PlayAgain
                     put "You reached your final destination. You have to throw the ring into The Crack of Doom. Now, would you like to do so?"
                     get ianswer6
                     if ianswer6 = "yes" then
-                        put "You destroyed the ring!"
+                        put "You destroyed the One Ring and saved all of the free people of Middle-earth."
                         igame_won := igame_won + 1
                     end if
                     if ianswer6 = "no" then
@@ -680,7 +686,7 @@ procedure PlayAgain
                     end if
                     exit when igame_won = 1
                 end loop
-            else %substituted end if with else in order not to display istatement, moved end if to the end
+            else
                 if ix = 10 then
                     put istatement
                 else
@@ -701,14 +707,14 @@ procedure PlayAgain
                         if CanIGoThroughMountain ("east") then
                             ix := ix + 1
                             isteps := isteps + 1
-
+                            ShowAdvanceMessage
                             randint (irope, 1, 4)
                             if iobjects = 1 then
                                 irope := 0
                             end if
                             if irope = inum1 or irope = inum4 then
                                 put "You found a rope. It was hidden in the small cave you noticed."
-                                put "Judging by the smell it belonged to the mountain troll."
+                                put "Judging by the smell it belonged to the Mountain troll."
                                 loop
                                     put "Would you like to take it?"
                                     get ianswer2
@@ -727,7 +733,7 @@ procedure PlayAgain
                                     exit when ianswer2 = "yes" or ianswer2 = "no"
                                 end loop
                             end if
-                            if ix > 3 or iy > 3 then %add x
+                            if ix > 3 or iy > 3 then
                                 randint (iforces, 1, 4)
                                 if iforces = inum2 or iforces = inum3 then
                                     randint (icreature, 3, 5)
@@ -772,7 +778,6 @@ procedure PlayAgain
                                         put "You defeated the enemy. During the fight you lost ", ipoints_lost, " points."
                                         if ilife_scale <= 0 then
                                             put "You were defeated. Therefore you lost the game."
-                                            %game ends if ilife_points <= 0
                                             imission_lost := imission_lost + 1
                                         end if
                                     end if
@@ -828,7 +833,6 @@ procedure PlayAgain
                                                 put "Invalid command. Try again."
                                             end if
                                             exit when ianswer4 = "hide" or ianswer4 = "attack" or ianswer4 = "give" or imission_lost = 1
-                                            %exit when imission_lost = 1
                                         end loop
                                     end if
                                 end if
@@ -841,7 +845,6 @@ procedure PlayAgain
         %EAST DIRECTION ENDS
 
         exit when ianswer = isentinel or imission_lost = 1 or igame_won = 1
-        %exit when imission_lost = 1
     end loop
     if imission_lost = 1 then
         Text.Colour (red)
@@ -850,30 +853,24 @@ procedure PlayAgain
     else
         if ianswer = isentinel then
             Text.Colour (yellow)
-            %put "Would you like to play again?"
         else
             if igame_won = 1 then
                 Text.Colour (white)
                 put " "
-                %put "You destroyed the One Ring and saved all of the free people of Middle-earth."
                 put "   Let us together rebuild this world that we may share in the days of peace. - Aragorn"
             end if
         end if
     end if
-    %put ilife_scale
-    put "# of steps ", isteps
-    put "x-value is ", ix
-    put "y-value is ", iy
 end PlayAgain
 %
 procedure InitGame
     isteps := 0 %calculates # of steps taken
-    ix := 1
-    iy := 1 %x and y values that make up the field
+    ix := 1 %y value that makes up the field
+    iy := 1 %x value that makes up the field
     iobjects := 0 %condition which makes it impossble to take a rope more than once
     ilife_scale := 100 %shows # of points you have, decreses # after combat situation
     imission_lost := 0 %condition similar to boolean, if it is positive user loses, end of the game is implemented
-    igame_won := 0
+    igame_won := 0 %condition similar to boolean, if it is larger than 0 user wins the game
 end InitGame
 
 loop
@@ -885,27 +882,24 @@ loop
         if ianswer7 = "yes" then
             put "So be it!"
         end if
-        %else
         if ianswer7 = "no" then
             put "Okay."
         end if
-        %    else
         if ianswer7 not= "yes" and ianswer7 not= "no" then
             put "Invalid answer."
         end if
-        %    end if
-        %end if
         exit when ianswer7 = "no" or ianswer7 = "yes"
     end loop
     exit when ianswer7 = "no"
 end loop
 cls
+setscreen ("graphics")
 Text.Colour (yellow)
+Text.ColourBack (black)
+cls
 locate (2, 23)
 put "THE LORD OF THE RINGS - LABYRINTH"
 locate (3, 30)
 put "By Danylo Tkachenko"
 Font.Draw ("THANK YOU FOR PLAYING", 98, 200, ifont, red)
 play ("4<B>4D2E4G4A8B8A4G4F+1E4<B>4E4F+1F+4F+4G4A8G8F+1E")
-%COMMENTS SHOULD BE ADDED,WHEN USER CHOSES A DIRECTION TO GO IN
-%CLS FUNCTION SHOULD BE ADDED SO ONLY CURRENT DIRECTION IS SHOWN
