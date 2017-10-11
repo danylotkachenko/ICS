@@ -1,0 +1,437 @@
+{Filename 	: TkaDanATMBankingMachine}
+{Program	: ATM simulator. Serves 3 clients. Each one of them belongs to a}
+{Outline 	  different bank. Each user has a variety of options she/he can}
+{             perform.}
+{Programmer : Danylo Tkachenko}
+{Class	    : ICS3U (Mr.Sze)}
+{Due Date	: 11/10/2017}
+program atm;
+
+const
+  PIN = '1234';
+  PIN2 = '8342';
+  PIN3 = '2064';
+ 
+var
+  entered_PIN: string;
+  current_balance: integer;
+  entered_option: integer;
+  entered_option2: integer;
+  entered_option3: integer;
+  temp_money: integer;
+  deposit_money: integer;
+  imax_deposit: integer;
+  sresponse: string;
+
+//user #1
+  function CheckPIN(entered: string): boolean;
+  begin
+    result := entered = PIN;
+  end;
+
+//user #2
+  function CheckPIN2(entered2: string): boolean;
+  begin
+    result := entered2 = PIN2;
+  end;
+
+//user #3
+   function CheckPIN3(entered3: string): boolean;
+  begin
+    result := entered3 = PIN3;
+  end;
+
+
+begin
+current_balance := 1000;
+entered_option := 0; //case 1
+entered_option2 := 0; //case 2
+entered_option3 := 0; //case 3
+imax_deposit := 2500;
+
+  writeln('Welcome to TD Bank!');
+  writeln('');
+  writeln('Please enter your PIN: ');
+  readln(entered_PIN);
+
+
+//TD Client
+  if (CheckPIN(entered_PIN)) then
+  begin
+    while (entered_option <> 5) do
+    begin
+      writeln('What do you want to do: ');
+      writeln('1) Withdraw money');
+      writeln('2) Withdraw fixed amount');
+      writeln('3) Deposit');
+      writeln('4) Check Balance');
+      writeln('5) Exit');
+      readln(entered_option);
+
+      case entered_option of
+
+        1:
+        begin
+          writeln('How much money do you want to withdraw?');
+          readln(temp_money);
+ 
+          if (temp_money > current_balance) then
+            writeln('Too much money, you dont have enough!')
+          else
+              begin
+                   if temp_money mod 10 = 0 then
+                      if temp_money >= 20 then
+                         begin
+                              current_balance := current_balance - temp_money;
+                              writeln('----------');
+                         end;
+                   if (temp_money mod 10 <> 0) or (temp_money < 20) then
+                      begin
+                           writeln ('AMOUNT OF MONEY SHOULD BE A MULTIPLE OF 10');
+                           writeln ('LEAST AMOUNT AVAILABLE FRO WITHDROWAL IS $20');
+                      end;
+              end;
+        end;
+
+        2:
+        begin
+          writeln('Choose an amount you would like to withdraw:');
+          writeln('a)$50');
+          writeln('b)$100');
+          writeln('c)$200');
+          writeln('d)$500');
+          readln (sresponse);
+
+          if sresponse = ('a') then
+             begin
+                  if 50 <= current_balance then
+                     begin
+                          current_balance := current_balance - 50;
+                          writeln('----------');
+                     end
+                  else
+                  begin
+                       writeln ('You do not have enough money in your bank account.');
+                  end
+             end;
+
+
+          if sresponse = ('b') then
+             begin
+                  if 100 <= current_balance then
+                     begin
+                          current_balance := current_balance - 100;
+                          writeln('----------')
+                     end
+                  else
+                  begin
+                       writeln ('You do not have enough money in your bank account.');
+                  end
+             end;
+
+          if sresponse = ('c') then
+             begin
+                  if 200 <= current_balance then
+                     begin
+                          current_balance := current_balance - 200;
+                          writeln('----------');
+                     end
+                  else
+                  begin
+                       writeln ('You do not have enough money in your bank account.');
+                  end
+          end;
+
+
+          if sresponse = ('d') then
+             begin
+                  if 500 <= current_balance then
+                     begin
+                          current_balance := current_balance - 500;
+                          writeln('----------')
+                     end
+                  else
+                  begin
+                       writeln ('You do not have enough money in your bank account.');
+                  end
+          end;
+        end;
+
+
+        3:
+        begin
+          writeln('How much money do you want to deposit?');
+          readln(deposit_money);
+ 
+          if (deposit_money > imax_deposit) then
+            writeln('Too much money. ATM cannot accept an amount this big.')
+          else
+          begin
+            current_balance := current_balance + deposit_money;
+            writeln('----------');
+          end;
+        end;
+
+        4:
+        begin
+             writeln('Your balance is: $',current_balance);
+             writeln('----------');
+        end;
+
+        5:
+        begin
+          writeln('Thanks for using our ATM!');
+        end;
+
+      end;
+    end;
+  end;
+
+
+
+//RBC Client
+  if (CheckPIN2(entered_PIN)) then
+  begin
+    while (entered_option2 <> 4) do
+    begin
+      writeln('Since you are an RBC client there is $2.50 comission.');
+      writeln('What do you want to do: ');
+      writeln('1) Withdraw money');
+      writeln('2) Withdraw fixed amount');
+      writeln('3) Check Balance');
+      writeln('4) Exit');
+      readln(entered_option2);
+      case entered_option2 of
+
+        1:
+        begin
+          writeln('How much money do you want to withdraw?');
+          readln(temp_money);
+ 
+          if (temp_money + 2 > current_balance) then
+            writeln('Too much money, you dont have enough!')
+          else
+              begin
+                   if temp_money mod 10 = 0 then
+                      if temp_money >= 20 then
+                         begin
+                              current_balance := current_balance - (temp_money + 2);
+                              writeln('----------');
+                         end;
+                   if (temp_money mod 10 <> 0) or (temp_money < 20) then
+                      begin
+                           writeln ('AMOUNT OF MONEY SHOULD BE A MULTIPLE OF 10');
+                           writeln ('LEAST AMOUNT AVAILABLE FRO WITHDROWAL IS $20');
+                      end;
+              end;
+        end;
+
+        2:
+        begin
+          writeln('Choose an amount you would like to withdraw:');
+          writeln('a)$50');
+          writeln('b)$100');
+          writeln('c)$200');
+          writeln('d)$500');
+          readln (sresponse);
+
+          if sresponse = ('a') then
+             begin
+                  if 52 <= current_balance then
+                     begin
+                          current_balance := current_balance - 52;
+                          writeln('----------');
+                     end
+                  else
+                  begin
+                       writeln ('You do not have enough money in your bank account.');
+                  end
+             end;
+
+
+          if sresponse = ('b') then
+             begin
+                  if 102 <= current_balance then
+                     begin
+                          current_balance := current_balance - 102;
+                          writeln('----------')
+                     end
+                  else
+                  begin
+                       writeln ('You do not have enough money in your bank account.');
+                  end
+             end;
+
+          if sresponse = ('c') then
+             begin
+                  if 202 <= current_balance then
+                     begin
+                          current_balance := current_balance - 202;
+                          writeln('----------');
+                     end
+                  else
+                  begin
+                       writeln ('You do not have enough money in your bank account.');
+                  end
+          end;
+
+
+          if sresponse = ('d') then
+             begin
+                  if 502 <= current_balance then
+                     begin
+                          current_balance := current_balance - 502;
+                          writeln('----------')
+                     end
+                  else
+                  begin
+                       writeln ('You do not have enough money in your bank account.');
+                  end
+          end;
+
+          end;
+
+
+        3:
+        begin
+             writeln('Your balance is: $',current_balance);
+             writeln('----------');
+        end;
+
+        4:
+        begin
+          writeln('Thanks for using our ATM!');
+        end;
+
+      end;
+    end;
+  end;
+
+
+
+//Scotiabank Client
+  if (CheckPIN3(entered_PIN)) then
+  begin
+    while (entered_option3 <> 4) do
+    begin
+      writeln('Since you are a Scotiabank client there is $2.50 comission.');
+      writeln('What do you want to do: ');
+      writeln('1) Withdraw money');
+      writeln('2) Withdraw fixed amount');
+      writeln('3) Check Balance');
+      writeln('4) Exit');
+      readln(entered_option3);
+      case entered_option3 of
+
+        1:
+        begin
+          writeln('How much money do you want to withdraw?');
+          readln(temp_money);
+ 
+          if (temp_money + 2 > current_balance) then
+            writeln('Too much money, you dont have enough!')
+          else
+              begin
+                   if temp_money mod 10 = 0 then
+                      if temp_money >= 20 then
+                         begin
+                              current_balance := current_balance - (temp_money + 2);
+                              writeln('----------');
+                         end;
+                   if (temp_money mod 10 <> 0) or (temp_money < 20) then
+                      begin
+                           writeln ('AMOUNT OF MONEY SHOULD BE A MULTIPLE OF 10');
+                           writeln ('LEAST AMOUNT AVAILABLE FRO WITHDROWAL IS $20');
+                      end;
+              end;
+        end;
+
+        2:
+        begin
+          writeln('Choose an amount you would like to withdraw:');
+          writeln('a)$50');
+          writeln('b)$100');
+          writeln('c)$200');
+          writeln('d)$500');
+          readln (sresponse);
+
+          if sresponse = ('a') then
+             begin
+                  if 52 <= current_balance then
+                     begin
+                          current_balance := current_balance - 52;
+                          writeln('----------');
+                     end
+                  else
+                  begin
+                       writeln ('You do not have enough money in your bank account.');
+                  end
+             end;
+
+
+          if sresponse = ('b') then
+             begin
+                  if 102 <= current_balance then
+                     begin
+                          current_balance := current_balance - 102;
+                          writeln('----------')
+                     end
+                  else
+                  begin
+                       writeln ('You do not have enough money in your bank account.');
+                  end
+             end;
+
+          if sresponse = ('c') then
+             begin
+                  if 202 <= current_balance then
+                     begin
+                          current_balance := current_balance - 202;
+                          writeln('----------');
+                     end
+                  else
+                  begin
+                       writeln ('You do not have enough money in your bank account.');
+                  end
+          end;
+
+
+          if sresponse = ('d') then
+             begin
+                  if 502 <= current_balance then
+                     begin
+                          current_balance := current_balance - 502;
+                          writeln('----------')
+                     end
+                  else
+                  begin
+                       writeln ('You do not have enough money in your bank account.');
+                  end
+          end;
+
+          end;
+
+
+        3:
+        begin
+             writeln('Your balance is: $',current_balance);
+             writeln('----------');
+        end;
+
+        4:
+        begin
+          writeln('Thanks for using our ATM!');
+        end;
+
+      end;
+    end;
+  end;
+
+
+  readln();
+end.
+
+
+
+
+
