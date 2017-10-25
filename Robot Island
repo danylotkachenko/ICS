@@ -9,7 +9,7 @@ var
 i, j, icompass: integer;
 ix, iy : integer;
 newX, newY : integer;
-isteps : integer;
+isteps, itrials : integer;
 
 island : array[1..11] of array[1..11] of integer;  //11 by 11 field
 
@@ -41,7 +41,7 @@ function IsEndOfTheIslandReached (direction: integer): boolean;
        begin
             IsEndOfTheIslandReached := true;  //robot got off the island
        end
-    else
+   else
        begin
             IsEndOfTheIslandReached := false;  //robot is still on the island
        end;
@@ -86,6 +86,8 @@ function CanIGoThisWay (direction: integer): boolean;
 
 begin
 isteps := 0;
+itrials := 0;
+
 //Obstacles begin
 island[3][5] := 2;
 island[8][5] := 2;
@@ -94,7 +96,9 @@ island[1][1] := 2;
 island[11][8] := 2;
 island[7][6] := 2;
 //Obstacles end
+
 randomize;
+
 ix := 6;
 iy := 6;
 
@@ -118,6 +122,11 @@ repeat
                                 writeln (ix,', ',iy);
                                 writeln ('');
                              end;
+                          if (CanIGoThisWay(icompass) = false) then
+                             begin
+                                  writeln ('There is an obstacle in your way.');
+                                  writeln ('');
+                             end;
                      end;
                   if icompass = 2 then //west
                      begin
@@ -128,6 +137,11 @@ repeat
                                   writeln ('# of steps: ', isteps);
                                   writeln ('You advanced one meter west.');
                                   writeln (ix,', ',iy);
+                                  writeln ('');
+                             end;
+                          if (CanIGoThisWay(icompass) = false) then
+                             begin
+                                  writeln ('There is an obstacle in your way.');
                                   writeln ('');
                              end;
                      end;
@@ -142,6 +156,11 @@ repeat
                                   writeln (ix,', ',iy);
                                   writeln ('');
                              end;
+                          if (CanIGoThisWay(icompass) = false) then
+                             begin
+                                  writeln ('There is an obstacle in your way.');
+                                  writeln ('');
+                             end;
                      end;
                   if icompass = 4 then //south
                      begin
@@ -152,6 +171,11 @@ repeat
                                   writeln ('# of steps: ', isteps);
                                   writeln ('You advanced one meter south.');
                                   writeln (ix,', ',iy);
+                                  writeln ('');
+                             end;
+                          if (CanIGoThisWay(icompass) = false) then
+                             begin
+                                  writeln ('There is an obstacle in your way.');
                                   writeln ('');
                              end;
                      end;
