@@ -104,8 +104,9 @@ iy := 6;
 writeln ('IsEndOfTheIslandReached ', IsEndOfTheIslandReached(1));
 writeln ('CanIGoThisWay ', CanIGoThisWay(1));
 
-//for i := 1 to 20 do
-//writeln ('Try #', i);
+for i := 1 to 20 do
+begin
+writeln ('Try #', i);
 
 //ROBOT BEGINS MOVING
 repeat
@@ -187,6 +188,7 @@ repeat
       end;
 until (IsEndOfTheIslandReached(icompass) = true);
 //ROBOT STOPS MOVING
+end;
 
 
 readln ();
