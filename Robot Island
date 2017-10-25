@@ -9,7 +9,7 @@ var
 i, j, icompass: integer;
 ix, iy : integer;
 newX, newY : integer;
-isteps, itrials : integer;
+isteps : integer;
 
 island : array[1..11] of array[1..11] of integer;  //11 by 11 field
 
@@ -86,7 +86,6 @@ function CanIGoThisWay (direction: integer): boolean;
 
 begin
 isteps := 0;
-itrials := 0;
 
 //Obstacles begin
 island[3][5] := 2;
@@ -106,6 +105,7 @@ writeln ('IsEndOfTheIslandReached ', IsEndOfTheIslandReached(1));
 writeln ('CanIGoThisWay ', CanIGoThisWay(1));
 
 //for i := 1 to 20 do
+//writeln ('Try #', i);
 
 //ROBOT BEGINS MOVING
 repeat
@@ -178,6 +178,10 @@ repeat
                                   writeln ('There is an obstacle in your way.');
                                   writeln ('');
                              end;
+                     end;
+                  if (IsEndOfTheIslandReached(icompass) = true) then
+                     begin
+                          writeln ('ROBOT GOT OFF THE ISALND');
                      end;
 
       end;
