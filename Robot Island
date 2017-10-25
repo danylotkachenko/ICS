@@ -1,0 +1,165 @@
+{Filename 	: TkaDanRobot_DirGraphics}
+{Program	:    }
+{Outline 	     }
+{            	 }
+{Programmer 	: Danylo Tkachenko}
+{Class	        : ICS3U (Mr.Sze)}
+{Due Date	:  2017-10-27}
+var
+i, j, icompass: integer;
+ix, iy : integer;
+newX, newY : integer;
+isteps : integer;
+
+island : array[1..11] of array[1..11] of integer;  //11 by 11 field
+
+function IsEndOfTheIslandReached (direction: integer): boolean;
+  begin
+
+    if direction = 1 then //east
+       begin
+        newX := ix + 1;
+        newY := iy;
+       end;
+    if direction = 2 then //west
+       begin
+        newX := ix - 1;
+        newY := iy;
+       end;
+    if direction = 3 then //north
+       begin
+        newX := ix;
+        newY := iy + 1;
+       end;
+    if direction = 4 then //south
+       begin
+        newX := ix;
+        newY := iy - 1;
+       end;
+
+   if (newX = 12) or (newX = 0) or (newY = 12) or (newY = 12) then
+       begin
+            IsEndOfTheIslandReached := true;  //robot got off the island
+       end
+    else
+       begin
+            IsEndOfTheIslandReached := false;  //robot is still on the island
+       end;
+
+  end;
+
+function CanIGoThisWay (direction: integer): boolean;
+  begin
+
+    if direction = 1 then //east
+       begin
+        newX := ix + 1;
+        newY := iy;
+       end;
+    if direction = 2 then //west
+       begin
+        newX := ix - 1;
+        newY := iy;
+       end;
+    if direction = 3 then //north
+       begin
+        newX := ix;
+        newY := iy + 1;
+       end;
+    if direction = 4 then //south
+       begin
+        newX := ix;
+        newY := iy - 1;
+       end;
+
+    if island[newX][newY] = 0 then
+       begin
+            CanIGoThisWay := true;
+       end
+    else
+        begin
+             CanIGoThisWay := false;
+        end;
+
+  end;
+
+
+begin
+isteps := 0;
+//Obstacles begin
+island[3][5] := 2;
+island[8][5] := 2;
+island[5][10] := 2;
+island[1][1] := 2;
+island[11][8] := 2;
+island[7][6] := 2;
+//Obstacles end
+randomize;
+ix := 6;
+iy := 6;
+
+writeln ('IsEndOfTheIslandReached ', IsEndOfTheIslandReached(1));
+writeln ('CanIGoThisWay ', CanIGoThisWay(1));
+
+//for i := 1 to 20 do
+
+//ROBOT BEGINS MOVING
+repeat
+      begin
+           icompass:= Random(4);
+                  if icompass = 1 then //east
+                     begin
+                          if (CanIGoThisWay(icompass) = true) then
+                             begin
+                                ix := ix + 1;
+                                isteps := isteps + 1;
+                                writeln ('# of steps: ', isteps);
+                                writeln ('You advanced one meter east.');
+                                writeln (ix,', ',iy);
+                                writeln ('');
+                             end;
+                     end;
+                  if icompass = 2 then //west
+                     begin
+                          if (CanIGoThisWay(icompass) = true) then
+                             begin
+                                  ix := ix - 1;
+                                  isteps := isteps + 1;
+                                  writeln ('# of steps: ', isteps);
+                                  writeln ('You advanced one meter west.');
+                                  writeln (ix,', ',iy);
+                                  writeln ('');
+                             end;
+                     end;
+                  if icompass = 3 then //north
+                     begin
+                          if (CanIGoThisWay(icompass) = true) then
+                             begin
+                                  iy := iy + 1;
+                                  isteps := isteps + 1;
+                                  writeln ('# of steps: ', isteps);
+                                  writeln ('You advanced one meter north.');
+                                  writeln (ix,', ',iy);
+                                  writeln ('');
+                             end;
+                     end;
+                  if icompass = 4 then //south
+                     begin
+                          if (CanIGoThisWay(icompass) = true) then
+                             begin
+                                  iy := iy - 1;
+                                  isteps := isteps + 1;
+                                  writeln ('# of steps: ', isteps);
+                                  writeln ('You advanced one meter south.');
+                                  writeln (ix,', ',iy);
+                                  writeln ('');
+                             end;
+                     end;
+
+      end;
+until (IsEndOfTheIslandReached(icompass) = true);
+//ROBOT STOPS MOVING
+
+
+readln ();
+end.
