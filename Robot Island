@@ -105,6 +105,11 @@ procedure DrawARobot (var RobotX, RobotY, Radius : integer);
                circle(40+20+(RobotX-1)*40, 40+20+(RobotY-1)*40, Radius);
           end;
 
+procedure DrawAnObstacle (var ObstacleX, ObstacleY : integer);
+          begin
+               Rectangle(40+20+(ObstacleX-1)*40-15, 40+20+(ObstacleY-1)*40-15,40+20+(ObstacleX-1)*40+15, 40+20+(ObstacleY-1)*40+15)
+          end;
+
 procedure WriteText (var textToWrite: string);
           begin
                MoveTo(20, 20);
@@ -118,6 +123,12 @@ InitGraph(gd,gm, 'c:\dev-pas');
 
 isteps := 0;
 
+for i := 1 to 11 do
+    for j := 1 to 11 do
+        begin
+             island[i][j] := 0;
+        end;
+
 //Obstacles begin
 island[3][5] := 2;
 island[8][5] := 2;
@@ -126,6 +137,15 @@ island[1][1] := 2;
 island[11][8] := 2;
 island[7][6] := 2;
 //Obstacles end
+
+for i := 1 to 11 do
+    for j := 1 to 11 do
+        begin
+             if island [i][j] = 2 then
+                begin
+                     DrawAnObstacle(i,j);
+                end;
+        end;
 
 randomize;
 
@@ -143,11 +163,13 @@ iy := 6;
 writeln ('Try #', i);
 r := 20 - 3*i;
 DrawARobot(ix, iy, r);
+delay (2000);
 
 //ROBOT BEGINS MOVING
 repeat
       begin
-           icompass:= Random(4);
+           icompass:= Random(4)+1;
+           writeln('icompass - ', icompass);
                   if icompass = 1 then //east
                      begin
                           if (CanIGoThisWay(icompass) = true) then
@@ -229,7 +251,7 @@ repeat
 until (IsEndOfTheIslandReached(icompass) = true);
 //ROBOT STOPS MOVING
 end;
-delay (15000);
+delay (5000);
 CloseGraph;
 
 readln ();
