@@ -170,7 +170,7 @@ repeat
       begin
            icompass:= Random(4)+1;
            writeln('icompass - ', icompass);
-                  if icompass = 1 then //east
+                  if icompass = 1 then //RIGHT, EAST
                      begin
                           if (CanIGoThisWay(icompass) = true) then
                              begin
@@ -187,7 +187,7 @@ repeat
                                   writeln ('');}
                              end;
                      end;
-                  if icompass = 2 then //west
+                  if icompass = 2 then //LEFT, WEST
                      begin
                           if (CanIGoThisWay(icompass) = true) then
                              begin
@@ -204,7 +204,7 @@ repeat
                                   writeln ('');}
                              end;
                      end;
-                  if icompass = 3 then //north
+                  if icompass = 3 then //DOWN, SOUTH
                      begin
                           if (CanIGoThisWay(icompass) = true) then
                              begin
@@ -221,7 +221,7 @@ repeat
                                   writeln ('');}
                              end;
                      end;
-                  if icompass = 4 then //south
+                  if icompass = 4 then //UP, NORTH
                      begin
                           if (CanIGoThisWay(icompass) = true) then
                              begin
