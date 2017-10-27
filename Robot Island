@@ -1,10 +1,11 @@
 {Filename 	: TkaDanRobotDir}
-{Program	:  }
-{Outline 	     }
-{            	 }
-{Programmer 	: Danylo Tkachenko}
-{Class	        : ICS3U (Mr.Sze)}
-{Due Date	:  2017-10-27}
+{Program	: A robot is placed in the middle of the 11 by 11 island with the ability to take 1 meter steps to the}
+{Outline 	  North, East, South and West. Program simulates 20 trials. The terrain has obstacles on it. Obstacles are static.}
+{             Program is written using two modes: graphics and text mode. Therefore it has two output screens.}
+{             At the end of 20 trials a statistical analysis is displayed.}
+{Programmer : Danylo Tkachenko}
+{Class	    : ICS3U (Mr.Sze)}
+{Due Date	: 2017-10-27}
 uses Crt, Graph;
 var
 i, j, icompass: integer;
@@ -19,7 +20,7 @@ island : array[1..11] of array[1..11] of integer;  //11 by 11 field
 
 function IsEndOfTheIslandReached (newX, newY: integer): boolean;
   begin
-       if (newX = 12) or (newX = 0) or (newY = 12) or (newY = 0) then
+       if (newX = 12) or (newX = 0) or (newY = 12) or (newY = 0) then  //borders of the island
           begin
                IsEndOfTheIslandReached := true;  //robot got off the island
           end
@@ -42,7 +43,7 @@ function CanIGoThisWay (newX, newY: integer): boolean;
                   end;
          end;
 
-procedure DisplayAMap;
+procedure DisplayAMap; //EACH SQUARE OF THE MAP IS 40 BY 40
           begin
                for i := 1 to 12 do
                    begin
@@ -53,12 +54,12 @@ procedure DisplayAMap;
                    end;
           end;
 
-procedure DrawARobot (var RobotX, RobotY, Radius : integer);
+procedure DrawARobot (var RobotX, RobotY, Radius : integer);  //DRAW A BLACK CIRCLE ON TOP IN ORDER TO HIDE THE ROBOT
           begin
-               circle(40+20+(RobotX-1)*40, 40+20+(RobotY-1)*40, Radius);
+               circle(40+20+(RobotX-1)*40, 40+20+(RobotY-1)*40, Radius);  //ROBOT IS REPRESENTED IN THE FORM OF A CIRCLE
           end;
 
-procedure DrawAnObstacle (var ObstacleX, ObstacleY : integer);
+procedure DrawAnObstacle (var ObstacleX, ObstacleY : integer); //OBSTACLES ARE REPRESENTED IN THE FORM OF A SQUARE
           begin
                Rectangle(40+20+(ObstacleX-1)*40-15, 40+20+(ObstacleY-1)*40-15,40+20+(ObstacleX-1)*40+15, 40+20+(ObstacleY-1)*40+15)
           end;
@@ -74,7 +75,7 @@ leave_east  := 0;
 leave_west  := 0;
 
 ilargest_number_of_steps := 0;
-ismallest_number_of_steps := 99999999;
+ismallest_number_of_steps := 99999999;  //INTEGER OF THIS SIZE IS USED TO MAKE SURE THAT ismallest_number_of_steps VARIABLE IS THE SMALLEST NUMBER
 
 for i := 1 to 11 do
     for j := 1 to 11 do
@@ -117,7 +118,7 @@ begin
       iy := 6;
       writeln ('');
       writeln ('                                       TRY #', i);
-      r := 20 - {3*}i;
+      r := 20 - i;
       DrawARobot(ix, iy, r);
       delay (1500);
 
