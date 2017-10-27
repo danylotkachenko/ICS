@@ -5,45 +5,22 @@
 {Programmer 	: Danylo Tkachenko}
 {Class	        : ICS3U (Mr.Sze)}
 {Due Date	:  2017-10-27}
-uses Crt, Graph, SysUtils;
+uses Crt, Graph;
 var
 i, j, icompass: integer;
-ix, iy : integer;
-newX, newY : integer;
-isteps : integer;
-r : integer;
-iterStart, iterFinish: string;
+ix, iy, ix2, iy2 : integer;
+isteps_total, isteps, iavg, ilargest_number_of_steps, ismallest_number_of_steps : integer;
+r : integer; //radius
+leave_north, leave_south, leave_east, leave_west : integer;
 
 
 gd,gm : smallint;
 
 island : array[1..11] of array[1..11] of integer;  //11 by 11 field
 
-function IsEndOfTheIslandReached (direction: integer): boolean;
+function IsEndOfTheIslandReached (newX, newY: integer): boolean;
   begin
-
-    if direction = 1 then //east
-       begin
-        newX := ix + 1;
-        newY := iy;
-       end;
-    if direction = 2 then //west
-       begin
-        newX := ix - 1;
-        newY := iy;
-       end;
-    if direction = 3 then //north
-       begin
-        newX := ix;
-        newY := iy + 1;
-       end;
-    if direction = 4 then //south
-       begin
-        newX := ix;
-        newY := iy - 1;
-       end;
-
-   if (newX = 12) or (newX = 0) or (newY = 12) or (newY = 12) then
+  if (newX = 12) or (newX = 0) or (newY = 12) or (newY = 0) then
        begin
             IsEndOfTheIslandReached := true;  //robot got off the island
        end
@@ -54,39 +31,16 @@ function IsEndOfTheIslandReached (direction: integer): boolean;
 
   end;
 
-function CanIGoThisWay (direction: integer): boolean;
+function CanIGoThisWay (newX, newY: integer): boolean;
   begin
-
-    if direction = 1 then //east
-       begin
-        newX := ix + 1;
-        newY := iy;
-       end;
-    if direction = 2 then //west
-       begin
-        newX := ix - 1;
-        newY := iy;
-       end;
-    if direction = 3 then //north
-       begin
-        newX := ix;
-        newY := iy + 1;
-       end;
-    if direction = 4 then //south
-       begin
-        newX := ix;
-        newY := iy - 1;
-       end;
-
-    if island[newX][newY] = 0 then
+  if island[newX][newY] = 0 then
        begin
             CanIGoThisWay := true;
        end
-    else
-        begin
+  else
+      begin
              CanIGoThisWay := false;
-        end;
-
+      end;
   end;
 
 procedure DisplayAMap;
@@ -110,18 +64,18 @@ procedure DrawAnObstacle (var ObstacleX, ObstacleY : integer);
                Rectangle(40+20+(ObstacleX-1)*40-15, 40+20+(ObstacleY-1)*40-15,40+20+(ObstacleX-1)*40+15, 40+20+(ObstacleY-1)*40+15)
           end;
 
-procedure WriteText (var textToWrite: string);
-          begin
-               MoveTo(20, 20);
-               OutText(textToWrite);
-          end;
-
 begin
 gd:=detect;
 gm:=0;
 InitGraph(gd,gm, 'c:\dev-pas');
 
-isteps := 0;
+leave_north := 0;
+leave_south := 0;
+leave_east  := 0;
+leave_west  := 0;
+
+ilargest_number_of_steps := 0;
+ismallest_number_of_steps := 99999999;
 
 for i := 1 to 11 do
     for j := 1 to 11 do
@@ -152,107 +106,114 @@ randomize;
 DisplayAMap;
 {writeln ('IsEndOfTheIslandReached ', IsEndOfTheIslandReached(1));
 writeln ('CanIGoThisWay ', CanIGoThisWay(1));}
-iterStart := 'Robot on the Island';
-iterFinish := 'ROBOT GOT OFF THE ISALND';
 
-for i := 1 to 6 do
+for i := 1 to 20 do
 begin
-WriteText(iterStart);
+isteps := 0;
 ix := 6;
 iy := 6;
-writeln ('Try #', i);
-r := 20 - 3*i;
+writeln ('                                       TRY #', i);
+r := 20 - {3*}i;
 DrawARobot(ix, iy, r);
-delay (2000);
+delay (1000);
 
 //ROBOT BEGINS MOVING
 repeat
       begin
            icompass:= Random(4)+1;
            writeln('icompass - ', icompass);
-                  if icompass = 1 then //RIGHT, EAST
+                  if icompass = 1 then //right
                      begin
-                          if (CanIGoThisWay(icompass) = true) then
-                             begin
-                                ix := ix + 1;
-                                isteps := isteps + 1;
-                                {writeln ('# of steps: ', isteps);
-                                writeln ('You advanced one meter east.');
-                                writeln (ix,', ',iy);
-                                writeln ('');}
-                             end;
-                          if (CanIGoThisWay(icompass) = false) then
-                             begin
-                                  {writeln ('There is an obstacle in your way.');
-                                  writeln ('');}
-                             end;
+                          ix2 := ix + 1;
+                          iy2 := iy;
                      end;
-                  if icompass = 2 then //LEFT, WEST
+                  if icompass = 2 then //left
                      begin
-                          if (CanIGoThisWay(icompass) = true) then
-                             begin
-                                  ix := ix - 1;
-                                  isteps := isteps + 1;
-                                  {writeln ('# of steps: ', isteps);
-                                  writeln ('You advanced one meter west.');
-                                  writeln (ix,', ',iy);
-                                  writeln ('');}
-                             end;
-                          if (CanIGoThisWay(icompass) = false) then
-                             begin
-                                  {writeln ('There is an obstacle in your way.');
-                                  writeln ('');}
-                             end;
+                          ix2 := ix - 1;
+                          iy2 := iy;
                      end;
-                  if icompass = 3 then //DOWN, SOUTH
+                  if icompass = 3 then //down
                      begin
-                          if (CanIGoThisWay(icompass) = true) then
-                             begin
-                                  iy := iy + 1;
-                                  isteps := isteps + 1;
-                                  {writeln ('# of steps: ', isteps);
-                                  writeln ('You advanced one meter north.');
-                                  writeln (ix,', ',iy);
-                                  writeln ('');}
-                             end;
-                          if (CanIGoThisWay(icompass) = false) then
-                             begin
-                                  {writeln ('There is an obstacle in your way.');
-                                  writeln ('');}
-                             end;
+                          ix2 := ix;
+                          iy2 := iy + 1;
                      end;
-                  if icompass = 4 then //UP, NORTH
+                  if icompass = 4 then //up
                      begin
-                          if (CanIGoThisWay(icompass) = true) then
-                             begin
-                                  iy := iy - 1;
-                                  isteps := isteps + 1;
-                                  {writeln ('# of steps: ', isteps);
-                                  writeln ('You advanced one meter south.');
-                                  writeln (ix,', ',iy);
-                                  writeln ('');}
-                             end;
-                          if (CanIGoThisWay(icompass) = false) then
-                             begin
-                                  {writeln ('There is an obstacle in your way.');
-                                  writeln ('');}
-                             end;
+                          ix2 := ix;
+                          iy2 := iy - 1;
                      end;
-                  DrawARobot(ix, iy, r);
-                  delay (2000);
 
-                  if (IsEndOfTheIslandReached(icompass) = true) then
+                  if (IsEndOfTheIslandReached(ix2, iy2) = true) then
                      begin
-                          WriteText(iterFinish);
+                     //CALCULATES NUMBER OF TIMES ROBOT LEFT THROUGH EACH SIDE OF THE FIELD
+                          if ix = 0 then
+                             begin
+                                  leave_west := leave_west + 1;
+                             end;
+                          if ix = 12 then
+                             begin
+                                  leave_east := leave_east + 1;
+                             end;
+                          if iy = 0 then
+                             begin
+                                  leave_north := leave_north + 1;
+                             end;
+                          if iy = 12 then
+                             begin
+                                  leave_south := leave_south + 1;
+                             end;
+                     //CALCULATES NUMBER OF TIMES ROBOT LEFT THROUGH EACH SIDE OF THE FIELD
+
+                          isteps := isteps + 1;
+                          isteps_total := isteps_total + 1;
+
+                          ix := ix2;
+                          iy := iy2;
+                          // FINDS LARGEST NUMBER
+                          if isteps > ilargest_number_of_steps then
+                             begin
+                                  ilargest_number_of_steps := isteps;
+                             end;
+                          // FINDS LARGEST NUMBER
+                          if isteps < ismallest_number_of_steps then
+                             begin
+                                  ismallest_number_of_steps := isteps;
+                             end;
                           writeln ('ROBOT GOT OFF THE ISALND');
-                     end;
+                     end
+                  else
+                     begin
 
+                          if CanIGoThisWay(ix2, iy2) then
+                             begin
+                                  ix := ix2;
+                                  iy := iy2;
+                                  DrawARobot(ix, iy, r);
+                                  delay (100);
+                                  isteps := isteps + 1;
+                                  isteps_total := isteps_total + 1;
+                                  writeln ('# of steps: ', isteps);
+                                  //writeln ('You advanced one meter east.');
+                                  writeln (ix,', ',iy);
+                                  writeln ('');
+                             end
+                          else
+                             begin
+                                  writeln ('There is an obstacle in your way.');
+                                  writeln ('');
+                             end;
+                     end;
       end;
-until (IsEndOfTheIslandReached(icompass) = true);
+until (IsEndOfTheIslandReached(ix, iy) = true);
 //ROBOT STOPS MOVING
 end;
-delay (5000);
-CloseGraph;
+
+iavg := isteps_total div 20;
+writeln ('');
+writeln ('On average, it took the robot ', iavg, ' steps to leave the island.');
+writeln ('Smallest # of steps ', ismallest_number_of_steps);
+writeln ('Largest # of steps ', ilargest_number_of_steps);
 
 readln ();
+CloseGraph;
 end.
