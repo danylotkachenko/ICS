@@ -104,24 +104,22 @@ for i := 1 to 11 do
 randomize;
 
 DisplayAMap;
-{writeln ('IsEndOfTheIslandReached ', IsEndOfTheIslandReached(1));
-writeln ('CanIGoThisWay ', CanIGoThisWay(1));}
 
 for i := 1 to 20 do
 begin
 isteps := 0;
 ix := 6;
 iy := 6;
+writeln ('');
 writeln ('                                       TRY #', i);
 r := 20 - {3*}i;
 DrawARobot(ix, iy, r);
-delay (1000);
+delay (1500);
 
 //ROBOT BEGINS MOVING
 repeat
       begin
            icompass:= Random(4)+1;
-           writeln('icompass - ', icompass);
                   if icompass = 1 then //right
                      begin
                           ix2 := ix + 1;
@@ -145,6 +143,9 @@ repeat
 
                   if (IsEndOfTheIslandReached(ix2, iy2) = true) then
                      begin
+
+                          ix := ix2;
+                          iy := iy2;
                      //CALCULATES NUMBER OF TIMES ROBOT LEFT THROUGH EACH SIDE OF THE FIELD
                           if ix = 0 then
                              begin
@@ -167,19 +168,21 @@ repeat
                           isteps := isteps + 1;
                           isteps_total := isteps_total + 1;
 
-                          ix := ix2;
-                          iy := iy2;
                           // FINDS LARGEST NUMBER
                           if isteps > ilargest_number_of_steps then
                              begin
                                   ilargest_number_of_steps := isteps;
                              end;
                           // FINDS LARGEST NUMBER
+
+                          // FINDS SMALLEST NUMBER
                           if isteps < ismallest_number_of_steps then
                              begin
                                   ismallest_number_of_steps := isteps;
                              end;
+                          // FINDS SMALLEST NUMBER
                           writeln ('ROBOT GOT OFF THE ISALND');
+                          writeln ('');
                      end
                   else
                      begin
@@ -189,17 +192,15 @@ repeat
                                   ix := ix2;
                                   iy := iy2;
                                   DrawARobot(ix, iy, r);
-                                  delay (100);
+                                  delay (75);
                                   isteps := isteps + 1;
                                   isteps_total := isteps_total + 1;
-                                  writeln ('# of steps: ', isteps);
-                                  //writeln ('You advanced one meter east.');
-                                  writeln (ix,', ',iy);
+                                  writeln ('x - ',ix,', ','y - ',iy);
                                   writeln ('');
                              end
                           else
                              begin
-                                  writeln ('There is an obstacle in your way.');
+                                  writeln ('THERE IS AN OBSTACLE IN YOUR WAY.');
                                   writeln ('');
                              end;
                      end;
@@ -213,6 +214,13 @@ writeln ('');
 writeln ('On average, it took the robot ', iavg, ' steps to leave the island.');
 writeln ('Smallest # of steps ', ismallest_number_of_steps);
 writeln ('Largest # of steps ', ilargest_number_of_steps);
+writeln ('');
+writeln ('Below is a table that lists who many times robot used each side of');
+writeln ('the island to leave:');
+writeln ('Northen side - ',leave_north);
+writeln ('Eastern side - ', leave_east);
+writeln ('Southern - ', leave_south);
+writeln ('Western - ', leave_west);
 
 readln ();
 CloseGraph;
