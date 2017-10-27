@@ -1,5 +1,5 @@
 {Filename 	: TkaDanRobotDir}
-{Program	:    }
+{Program	:  }
 {Outline 	     }
 {            	 }
 {Programmer 	: Danylo Tkachenko}
@@ -11,8 +11,7 @@ i, j, icompass: integer;
 ix, iy, ix2, iy2 : integer;
 isteps_total, isteps, iavg, ilargest_number_of_steps, ismallest_number_of_steps : integer;
 r : integer; //radius
-leave_north, leave_south, leave_east, leave_west : integer;
-
+leave_north, leave_south, leave_east, leave_west : integer; //store number of times robot used each side of the island to leave
 
 gd,gm : smallint;
 
@@ -20,28 +19,28 @@ island : array[1..11] of array[1..11] of integer;  //11 by 11 field
 
 function IsEndOfTheIslandReached (newX, newY: integer): boolean;
   begin
-  if (newX = 12) or (newX = 0) or (newY = 12) or (newY = 0) then
-       begin
-            IsEndOfTheIslandReached := true;  //robot got off the island
-       end
-   else
-       begin
-            IsEndOfTheIslandReached := false;  //robot is still on the island
-       end;
+       if (newX = 12) or (newX = 0) or (newY = 12) or (newY = 0) then
+          begin
+               IsEndOfTheIslandReached := true;  //robot got off the island
+          end
+       else
+           begin
+                IsEndOfTheIslandReached := false;  //robot is still on the island
+           end;
 
   end;
 
 function CanIGoThisWay (newX, newY: integer): boolean;
-  begin
-  if island[newX][newY] = 0 then
-       begin
-            CanIGoThisWay := true;
-       end
-  else
-      begin
-             CanIGoThisWay := false;
-      end;
-  end;
+         begin
+              if island[newX][newY] = 0 then
+                 begin
+                      CanIGoThisWay := true;
+                 end
+              else
+                  begin
+                       CanIGoThisWay := false;
+                  end;
+         end;
 
 procedure DisplayAMap;
           begin
@@ -110,16 +109,17 @@ randomize;
 
 DisplayAMap;
 
+//20 TRIALS BEGIN
 for i := 1 to 20 do
 begin
-isteps := 0;
-ix := 6;
-iy := 6;
-writeln ('');
-writeln ('                                       TRY #', i);
-r := 20 - {3*}i;
-DrawARobot(ix, iy, r);
-delay (1500);
+      isteps := 0;
+      ix := 6;
+      iy := 6;
+      writeln ('');
+      writeln ('                                       TRY #', i);
+      r := 20 - {3*}i;
+      DrawARobot(ix, iy, r);
+      delay (1500);
 
 //ROBOT BEGINS MOVING
 repeat
@@ -186,6 +186,7 @@ repeat
                                   ismallest_number_of_steps := isteps;
                              end;
                           // FINDS SMALLEST NUMBER
+
                           writeln ('ROBOT GOT OFF THE ISALND');
                           writeln ('');
                      end
@@ -213,14 +214,15 @@ repeat
 until (IsEndOfTheIslandReached(ix, iy) = true);
 //ROBOT STOPS MOVING
 end;
+//20 TRIALS END
 
 iavg := isteps_total div 20;
 writeln ('');
 writeln ('On average, it took the robot ', iavg, ' steps to leave the island.');
-writeln ('Smallest # of steps ', ismallest_number_of_steps);
-writeln ('Largest # of steps ', ilargest_number_of_steps);
+writeln ('Smallest # of steps: ', ismallest_number_of_steps);
+writeln ('Largest # of steps: ', ilargest_number_of_steps);
 writeln ('');
-writeln ('Below is a table that lists who many times robot used each side of');
+writeln ('Below is a table that lists how many times robot used each side of');
 writeln ('the island to leave:');
 writeln ('Northen side - ',leave_north);
 writeln ('Eastern side - ', leave_east);
