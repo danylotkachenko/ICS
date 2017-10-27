@@ -1,4 +1,4 @@
-{Filename 	: TkaDanRobot_DirGraphics}
+{Filename 	: TkaDanRobotDir}
 {Program	:    }
 {Outline 	     }
 {            	 }
@@ -85,11 +85,16 @@ for i := 1 to 11 do
 
 //Obstacles begin
 island[3][5] := 2;
-island[8][5] := 2;
+island[8][2] := 2;
 island[5][10] := 2;
 island[1][1] := 2;
 island[11][8] := 2;
 island[7][6] := 2;
+island[9][3] := 2;
+island[2][4] := 2;
+island[4][7] := 2;
+island[6][9] := 2;
+island[10][11] := 2;
 //Obstacles end
 
 for i := 1 to 11 do
