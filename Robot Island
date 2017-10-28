@@ -13,6 +13,7 @@ ix, iy, ix2, iy2 : integer;
 isteps_total, isteps, iavg, ilargest_number_of_steps, ismallest_number_of_steps : integer;
 r : integer; //radius
 leave_north, leave_south, leave_east, leave_west : integer; //store number of times robot used each side of the island to leave
+iobstacle : integer;
 
 gd,gm : smallint;
 
@@ -64,7 +65,13 @@ procedure DrawAnObstacle (var ObstacleX, ObstacleY : integer); //OBSTACLES ARE R
                Rectangle(40+20+(ObstacleX-1)*40-15, 40+20+(ObstacleY-1)*40-15,40+20+(ObstacleX-1)*40+15, 40+20+(ObstacleY-1)*40+15)
           end;
 
+procedure CoverTheRobot (var CoverX, CoverY : integer); //COVERS ROBOT'S PREVIOUS MOVEMENTS BY PLACING A SQUARE OVER THEM
+          begin
+               bar(40+20+(CoverX-1)*40-19, 40+20+(CoverY-1)*40-19,40+20+(CoverX-1)*40+19, 40+20+(CoverY-1)*40+19)
+          end;
+//*************************************************************
 begin
+randomize;
 gd:=detect;
 gm:=0;
 InitGraph(gd,gm, 'c:\dev-pas');
@@ -81,9 +88,17 @@ for i := 1 to 11 do
     for j := 1 to 11 do
         begin
              island[i][j] := 0;
+             if (i <> 6) and (j <> 6) then
+                begin
+                     iobstacle := Random(10);
+                               if iobstacle = 5 then
+                                  begin
+                                       island[i][j] := 2;
+                                  end
+                end;
         end;
 
-//Obstacles begin
+{Obstacles begin
 island[3][5] := 2;
 island[8][2] := 2;
 island[5][10] := 2;
@@ -95,7 +110,7 @@ island[2][4] := 2;
 island[4][7] := 2;
 island[6][9] := 2;
 island[10][11] := 2;
-//Obstacles end
+Obstacles end}
 
 for i := 1 to 11 do
     for j := 1 to 11 do
@@ -106,7 +121,7 @@ for i := 1 to 11 do
                 end;
         end;
 
-randomize;
+//randomize;
 
 DisplayAMap;
 
@@ -118,7 +133,7 @@ begin
       iy := 6;
       writeln ('');
       writeln ('                                       TRY #', i);
-      r := 20 - i;
+      r := 20;
       DrawARobot(ix, iy, r);
       delay (1500);
 
@@ -149,7 +164,9 @@ repeat
 
                   if (IsEndOfTheIslandReached(ix2, iy2) = true) then
                      begin
-
+                          //ERASING THE PREVIOUS MOVEMENT>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+                          CoverTheRobot (ix, iy);
+                          //ERASING THE PREVIOUS MOVEMENT
                           ix := ix2;
                           iy := iy2;
                      //CALCULATES NUMBER OF TIMES ROBOT LEFT THROUGH EACH SIDE OF THE FIELD
@@ -196,10 +213,14 @@ repeat
 
                           if CanIGoThisWay(ix2, iy2) then
                              begin
+                                  //ERASING THE PREVIOUS MOVEMENT
+                                  CoverTheRobot (ix, iy);
+                                  //ERASING THE PREVIOUS MOVEMENT
                                   ix := ix2;
                                   iy := iy2;
                                   DrawARobot(ix, iy, r);
                                   delay (75);
+
                                   isteps := isteps + 1;
                                   isteps_total := isteps_total + 1;
                                   writeln ('x - ',ix,', ','y - ',iy);
