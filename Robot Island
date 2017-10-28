@@ -69,7 +69,7 @@ procedure CoverTheRobot (var CoverX, CoverY : integer); //COVERS ROBOT'S PREVIOU
           begin
                bar(40+20+(CoverX-1)*40-19, 40+20+(CoverY-1)*40-19,40+20+(CoverX-1)*40+19, 40+20+(CoverY-1)*40+19)
           end;
-//*************************************************************
+
 begin
 randomize;
 gd:=detect;
@@ -90,27 +90,13 @@ for i := 1 to 11 do
              island[i][j] := 0;
              if (i <> 6) and (j <> 6) then
                 begin
-                     iobstacle := Random(10);
-                               if iobstacle = 5 then
+                     iobstacle := Random(8);
+                               if iobstacle = 4 then
                                   begin
                                        island[i][j] := 2;
                                   end
                 end;
         end;
-
-{Obstacles begin
-island[3][5] := 2;
-island[8][2] := 2;
-island[5][10] := 2;
-island[1][1] := 2;
-island[11][8] := 2;
-island[7][6] := 2;
-island[9][3] := 2;
-island[2][4] := 2;
-island[4][7] := 2;
-island[6][9] := 2;
-island[10][11] := 2;
-Obstacles end}
 
 for i := 1 to 11 do
     for j := 1 to 11 do
@@ -120,8 +106,6 @@ for i := 1 to 11 do
                      DrawAnObstacle(i,j);
                 end;
         end;
-
-//randomize;
 
 DisplayAMap;
 
@@ -133,7 +117,7 @@ begin
       iy := 6;
       writeln ('');
       writeln ('                                       TRY #', i);
-      r := 20;
+      r := 19;
       DrawARobot(ix, iy, r);
       delay (1500);
 
