@@ -1,8 +1,10 @@
 {Filename 	: TkaDanRobotDir}
 {Program	: A robot is placed in the middle of the 11 by 11 island with the ability to take 1 meter steps to the}
-{Outline 	  North, East, South and West. Program simulates 20 trials. The terrain has obstacles on it. Obstacles are static.}
+{Outline 	  North, East, South and West. Program simulates 20 trials. The terrain has obstacles on it. Obstacles are static during all 20 simulations.}
+{             However, each time a program is executed they randomize. Upon reaching the end of the island the robot dissappears.}
 {             Program is written using two modes: graphics and text mode. Therefore it has two output screens.}
 {             At the end of 20 trials a statistical analysis is displayed.}
+{             Program should not be stopped while executing. If it is stopped and then compiled again an error occurs "Error while linking".}
 {Programmer : Danylo Tkachenko}
 {Class	    : ICS3U (Mr.Sze)}
 {Due Date	: 2017-10-27}
@@ -117,7 +119,7 @@ begin
       iy := 6;
       writeln ('');
       writeln ('                                       TRY #', i);
-      r := 19;
+      r := 18;
       DrawARobot(ix, iy, r);
       delay (1500);
 
@@ -148,9 +150,9 @@ repeat
 
                   if (IsEndOfTheIslandReached(ix2, iy2) = true) then
                      begin
-                          //ERASING THE PREVIOUS MOVEMENT>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+                          //ERASES THE PREVIOUS MOVEMENT
                           CoverTheRobot (ix, iy);
-                          //ERASING THE PREVIOUS MOVEMENT
+                          //ERASES THE PREVIOUS MOVEMENT
                           ix := ix2;
                           iy := iy2;
                      //CALCULATES NUMBER OF TIMES ROBOT LEFT THROUGH EACH SIDE OF THE FIELD
@@ -197,9 +199,9 @@ repeat
 
                           if CanIGoThisWay(ix2, iy2) then
                              begin
-                                  //ERASING THE PREVIOUS MOVEMENT
+                                  //ERASES THE PREVIOUS MOVEMENT
                                   CoverTheRobot (ix, iy);
-                                  //ERASING THE PREVIOUS MOVEMENT
+                                  //ERASES THE PREVIOUS MOVEMENT
                                   ix := ix2;
                                   iy := iy2;
                                   DrawARobot(ix, iy, r);
