@@ -1,0 +1,246 @@
+{Filename 	: TkaDanATMBankingMachine2}
+{Program	: }
+{Outline 	  }
+{             }
+{Programmer : Danylo Tkachenko}
+{Class	    : ICS3U (Mr.Sze)}
+{Due Date	: 11/10/2017}
+
+var
+  entered_PIN: integer;
+  current_balance: integer;
+  entered_option: integer;
+  temp_money: integer;
+  deposit_money: integer;
+  imax_deposit: integer;
+  sresponse: string;
+  i : integer;
+  clientID : integer;
+
+passwords : array[1..3] of integer;
+
+function GetUserIDByPIN(entered_pin: integer): integer;
+  begin
+       GetUserIDByPIN := 0;
+       for i := 1 to 3 do
+           begin
+                if (entered_pin = passwords[i]) then
+                   begin
+                        GetUserIDByPIN := i;
+                   end;
+           end;
+  end;
+
+function WithdrawEnteredAmount : integer;
+begin
+writeln('How much money do you want to withdraw?');
+readln(temp_money);
+                   if (temp_money > current_balance) then
+                      writeln('Too much money, you dont have enough!')
+                   else
+                       begin
+                            if temp_money mod 10 = 0 then
+                               if temp_money >= 20 then
+                                  begin
+                                       if (clientID = 2) or (clientID = 3) then
+                                          begin
+                                               current_balance := current_balance - (temp_money+2);
+                                               writeln('----------');
+                                          end
+                                       else
+                                           begin
+                                                current_balance := current_balance - temp_money;
+                                                writeln('----------');
+                                           end;
+                                  end;
+                   if (temp_money mod 10 <> 0) or (temp_money < 20) then
+                      begin
+                           writeln ('AMOUNT OF MONEY SHOULD BE A MULTIPLE OF 10');
+                           writeln ('LEAST AMOUNT AVAILABLE FRO WITHDROWAL IS $20');
+                      end;
+                   end;
+end;
+
+function WithdrawFixedAmount : integer;
+begin
+writeln('Choose an amount you would like to withdraw:');
+          writeln('a)$50');
+          writeln('b)$100');
+          writeln('c)$200');
+          writeln('d)$500');
+          readln (sresponse);
+
+          if sresponse = ('a') then
+             begin
+                  if 50 <= current_balance then
+                     begin
+                          if (clientID = 2) or (clientID = 3) then
+                             begin
+                                  current_balance := current_balance - 52;
+                             end
+                          else
+                          if clientID = 1 then
+                              begin
+                                   current_balance := current_balance - 50;
+                              end;
+                          writeln('----------');
+                     end
+                  else
+                      begin
+                           writeln ('You do not have enough money in your bank account.');
+                      end
+             end;
+
+
+          if sresponse = ('b') then
+             begin
+                 if 100 <= current_balance then
+                     begin
+                          if (clientID = 2) or (clientID = 3) then
+                             begin
+                                  current_balance := current_balance - 102;
+                             end
+                          else
+                          if clientID = 1 then
+                              begin
+                                   current_balance := current_balance - 50;
+                              end;
+                          writeln('----------')
+                     end
+                  else
+                  begin
+                       writeln ('You do not have enough money in your bank account.');
+                  end
+             end;
+
+          if sresponse = ('c') then
+             begin
+                  if 200 <= current_balance then
+                     begin
+                          if (clientID = 2) or (clientID = 3) then
+                             begin
+                                  current_balance := current_balance - 202;
+                             end
+                          else
+                          if clientID = 1 then
+                              begin
+                                   current_balance := current_balance - 200;
+                              end;
+                          writeln('----------');
+                     end
+                  else
+                  begin
+                       writeln ('You do not have enough money in your bank account.');
+                  end
+          end;
+
+
+          if sresponse = ('d') then
+             begin
+                  if 500 <= current_balance then
+                     begin
+                          if (clientID = 2) or (clientID = 3) then
+                             begin
+                                  current_balance := current_balance - 502;
+                             end
+                          else
+                          if clientID = 1 then
+                              begin
+                                   current_balance := current_balance - 500;
+                              end;
+                          writeln('----------')
+                     end
+                  else
+                  begin
+                       writeln ('You do not have enough money in your bank account.');
+                  end
+          end;
+end;
+
+function Deposit : integer;
+begin
+     writeln('How much money do you want to deposit?');
+     readln(deposit_money);
+ 
+          if (deposit_money > imax_deposit) then
+            writeln('Too much money. ATM cannot accept an amount this big.')
+          else
+          begin
+            current_balance := current_balance + deposit_money;
+            writeln('----------');
+          end;
+end;
+
+function CheckAccountBalance : integer;
+begin
+     writeln('Your balance is: $',current_balance);
+     writeln('----------');
+end;
+
+
+
+begin
+passwords[1] := 1234;
+passwords[2] := 1984;
+passwords[3] := 2064;
+
+current_balance := 1000;
+entered_option := 0; //case 1
+imax_deposit := 2500;
+
+  writeln('Welcome to TD Bank!');
+  writeln('');
+  writeln('Please enter your PIN: ');
+  readln(entered_PIN);
+  clientID := GetUserIDByPIN(entered_PIN);
+
+  if (clientID <> 0) then
+  begin
+    while (entered_option <> 5) do
+    begin
+      writeln('What do you want to do: ');
+      writeln('1) Withdraw money');
+      writeln('2) Withdraw fixed amount');
+      if clientID = 1 then
+         begin
+              writeln('3) Deposit');
+         end;
+      writeln('4) Check Balance');
+      writeln('5) Exit');
+      readln(entered_option);
+
+      case entered_option of
+
+        1:
+        begin
+             WithdrawEnteredAmount
+        end;
+
+        2:
+        begin
+             WithdrawFixedAmount
+        end;
+
+
+        3:
+        if clientID = 1 then
+        begin
+             Deposit
+        end;
+
+        4:
+        begin
+             CheckAccountBalance
+        end;
+
+        5:
+        begin
+             writeln('Thanks for using our ATM!');
+        end;
+
+      end;
+    end;
+  end;
+
+  readln();
+end.
