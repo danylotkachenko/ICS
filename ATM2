@@ -1,11 +1,9 @@
 {Filename 	: TkaDanATMBankingMachine2}
 {Program	: }
 {Outline 	  }
-{             }
 {Programmer : Danylo Tkachenko}
 {Class	    : ICS3U (Mr.Sze)}
 {Due Date	: 11/10/2017}
-
 var
   entered_PIN: integer;
   current_balance: integer;
@@ -91,7 +89,6 @@ writeln('Choose an amount you would like to withdraw:');
                       end
              end;
 
-
           if sresponse = ('b') then
              begin
                  if 100 <= current_balance then
@@ -103,7 +100,7 @@ writeln('Choose an amount you would like to withdraw:');
                           else
                           if clientID = 1 then
                               begin
-                                   current_balance := current_balance - 50;
+                                   current_balance := current_balance - 100;
                               end;
                           writeln('----------')
                      end
@@ -133,7 +130,6 @@ writeln('Choose an amount you would like to withdraw:');
                        writeln ('You do not have enough money in your bank account.');
                   end
           end;
-
 
           if sresponse = ('d') then
              begin
@@ -165,10 +161,10 @@ begin
           if (deposit_money > imax_deposit) then
             writeln('Too much money. ATM cannot accept an amount this big.')
           else
-          begin
-            current_balance := current_balance + deposit_money;
-            writeln('----------');
-          end;
+              begin
+                   current_balance := current_balance + deposit_money;
+                   writeln('----------');
+              end;
 end;
 
 function CheckAccountBalance : integer;
@@ -176,16 +172,14 @@ begin
      writeln('Your balance is: $',current_balance);
      writeln('----------');
 end;
-
-
-
+//MAIN BEGINS
 begin
 passwords[1] := 1234;
 passwords[2] := 1984;
 passwords[3] := 2064;
 
 current_balance := 1000;
-entered_option := 0; //case 1
+entered_option := 0;
 imax_deposit := 2500;
 
   writeln('Welcome to TD Bank!');
@@ -221,7 +215,6 @@ imax_deposit := 2500;
              WithdrawFixedAmount
         end;
 
-
         3:
         if clientID = 1 then
         begin
@@ -241,6 +234,7 @@ imax_deposit := 2500;
       end;
     end;
   end;
+//MAIN ENDS
 
   readln();
 end.
