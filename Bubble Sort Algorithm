@@ -1,0 +1,48 @@
+{Filename 	: TkaDanN-1}
+{Program	:       }
+{Outline            }
+{Programmer : Danylo Tkachenko}
+{Class	    : ICS3U (Mr.Sze)}
+{Due Date	: 2017-11-14}
+const
+ilength = 100;
+var
+inum : integer;
+i, k : integer;
+numbers : array [1..100] of integer;
+
+function PrintArray : integer;
+var
+j : integer;
+begin
+     for j := 1 to ilength do
+         begin
+              write (numbers[j], ' ');
+         end;
+     writeln(' ');
+end;
+
+begin
+randomize;
+for i := 1 to ilength do
+    begin
+         numbers[i] := Random(100);
+    end;
+
+writeln('Array before sorting:');
+PrintArray;
+
+for k := (ilength-1) downto 1 do
+for i := 1 to k do
+begin
+     if numbers[i] > numbers[i+1] then
+     begin
+        inum := numbers[i];
+        numbers[i] := numbers[i+1];
+        numbers[i+1] := inum;
+     end;
+end;
+writeln('Array after sorting:');
+PrintArray;
+readln();
+end.
