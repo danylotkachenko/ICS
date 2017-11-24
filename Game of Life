@@ -1,9 +1,10 @@
-{Filename 	: TkaDan}
+{Filename 	: TkaDanBacteria}
 {Program	:       }
 {Outline            }
 {Programmer : Danylo Tkachenko}
 {Class	    : ICS3U (Mr.Sze)}
 {Due Date	: 2017-11-14}
+//https://www.freepascal.org/docs-html/rtl/graph/line.html
 
 type
  map = array [1..70] of array [1..70] of integer;
@@ -11,6 +12,7 @@ type
 var
  numbers : map;
 
+//FillArray Begins
 function FillArray(var arrToFill: map) : integer;
 var
 i, j, inum : integer;
@@ -30,9 +32,9 @@ randomize;
                             end;
                   end;
 end;
+//FillArray Ends
 
-
-
+//PrintArray Begins
 function PrintArray(var arrToPrint: map) : integer;
 var
 i, j : integer;
@@ -46,8 +48,10 @@ begin
          writeln ('');
      end;
 end;
+//PrintArray Ends
 
-function GetNumberOfNeighbours (var arrToPrint : map, i, j : integer) : integer;
+//GetNumberOfNeighbours Begins
+function GetNumberOfNeighbours (var arrToPrint : map, i, j : integer) : integer;  //sub , with ;
 begin
 GetNumberOfNeighbours := 0;
 
@@ -75,22 +79,28 @@ GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
 if (i-1 >= 1) and (j+1 <= 70) and (arrToPrint[i-1][j+1] = 1) then
 GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
 
-
 end;
+//GetNumberOfNeighbours Ends
 
+//Step Begins
 function Step (var arrToPrint: map) : integer;
 var
-NextStwpMap : map;
+NextStepMap : map;
 number_of_neighbours : integer;
 begin
 number_of_neighbours := GetNumberOfNeighbours(arrToPrint, i, j);
+                     if number_of_neighbours = 3 then
+
+                     if (number_of_neighbours >= 4) or (number_of_neighbours <= 1)then
+
+                     if (number_of_neighbours = 2) or (number_of_neighbours = 3) then
+                     result := NextStepMap;
+
 end;
+//Step Ends
 
 begin
 
-
-FillArray(numbers);
-PrintArray(numbers);
 
 readln();
 end.
