@@ -1,0 +1,96 @@
+{Filename 	: TkaDan}
+{Program	:       }
+{Outline            }
+{Programmer : Danylo Tkachenko}
+{Class	    : ICS3U (Mr.Sze)}
+{Due Date	: 2017-11-14}
+
+type
+ map = array [1..70] of array [1..70] of integer;
+
+var
+ numbers : map;
+
+function FillArray(var arrToFill: map) : integer;
+var
+i, j, inum : integer;
+begin
+randomize;
+          for i := 1 to 70 do
+              for j := 1 to 70 do
+                  begin
+                   inum := Random(5);
+                        if inum = 4 then
+                           begin
+                                arrToFill[i][j] := 1;
+                           end
+                        else
+                            begin
+                                 arrToFill[i][j] := 0;
+                            end;
+                  end;
+end;
+
+
+
+function PrintArray(var arrToPrint: map) : integer;
+var
+i, j : integer;
+begin
+     for i := 1 to 70 do
+     begin
+         for j := 1 to 70 do
+             begin
+              write (arrToPrint[i][j], ' ');
+             end;
+         writeln ('');
+     end;
+end;
+
+function GetNumberOfNeighbours (var arrToPrint : map, i, j : integer) : integer;
+begin
+GetNumberOfNeighbours := 0;
+
+if (i+1 <= 70) and (arrToPrint[i+1][j] = 1) then
+GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
+
+if (i-1 >= 1) and (arrToPrint[i-1][j] = 1) then
+GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
+
+if (j+1 <= 70) and (arrToPrint[i][j+1] = 1) then
+GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
+
+if (j-1 >= 1) and (arrToPrint[i][j-1] = 1) then
+GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
+
+if (i+1 <= 70) and (j+1 <= 70) and (arrToPrint[i+1][j+1] = 1) then
+GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
+
+if (i-1 >= 1) and (j-1 >= 1) and (arrToPrint[i-1][j-1] = 1) then
+GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
+
+if (i+1 <= 70) and (j-1 >= 1) and (arrToPrint[i+1][j-1] = 1) then
+GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
+
+if (i-1 >= 1) and (j+1 <= 70) and (arrToPrint[i-1][j+1] = 1) then
+GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
+
+
+end;
+
+function Step (var arrToPrint: map) : integer;
+var
+NextStwpMap : map;
+number_of_neighbours : integer;
+begin
+number_of_neighbours := GetNumberOfNeighbours(arrToPrint, i, j);
+end;
+
+begin
+
+
+FillArray(numbers);
+PrintArray(numbers);
+
+readln();
+end.
