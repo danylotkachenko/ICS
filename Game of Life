@@ -1,4 +1,4 @@
-{Filename 	: TkaDanBacteria}
+{Filename 	: TkaDanBacteriaLogic}
 {Program	:       }
 {Outline            }
 {Programmer : Danylo Tkachenko}
@@ -7,7 +7,7 @@
 //https://www.freepascal.org/docs-html/rtl/graph/line.html
 
 type
- map = array [1..70] of array [1..70] of integer;
+ map = array [1..10] of array [1..10] of integer;
 
 var
  numbers : map;
@@ -32,16 +32,18 @@ randomize;
                             end;
                   end;
 end;
-//FillArray Ends}
+//FillArray Ends
+
+}
 
 //PrintArray Begins
 function PrintArray(var arrToPrint: map) : integer;
 var
 i, j : integer;
 begin
-     for i := 1 to 70 do
+     for i := 1 to 10 do
      begin
-         for j := 1 to 70 do
+         for j := 1 to 10 do
              begin
               write (arrToPrint[i][j], ' ');
              end;
@@ -55,28 +57,28 @@ function GetNumberOfNeighbours (var arrToPrint : map; i, j : integer) : integer;
 begin
 GetNumberOfNeighbours := 0;
 
-if (i+1 <= 70) and (arrToPrint[i+1][j] = 1) then
+if (i+1 <= 10) and (arrToPrint[i+1][j] = 1) then
 GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
 
 if (i-1 >= 1) and (arrToPrint[i-1][j] = 1) then
 GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
 
-if (j+1 <= 70) and (arrToPrint[i][j+1] = 1) then
+if (j+1 <= 10) and (arrToPrint[i][j+1] = 1) then
 GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
 
 if (j-1 >= 1) and (arrToPrint[i][j-1] = 1) then
 GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
 
-if (i+1 <= 70) and (j+1 <= 70) and (arrToPrint[i+1][j+1] = 1) then
+if (i+1 <= 10) and (j+1 <= 10) and (arrToPrint[i+1][j+1] = 1) then
 GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
 
 if (i-1 >= 1) and (j-1 >= 1) and (arrToPrint[i-1][j-1] = 1) then
 GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
 
-if (i+1 <= 70) and (j-1 >= 1) and (arrToPrint[i+1][j-1] = 1) then
+if (i+1 <= 10) and (j-1 >= 1) and (arrToPrint[i+1][j-1] = 1) then
 GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
 
-if (i-1 >= 1) and (j+1 <= 70) and (arrToPrint[i-1][j+1] = 1) then
+if (i-1 >= 1) and (j+1 <= 10) and (arrToPrint[i-1][j+1] = 1) then
 GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
 
 end;
@@ -87,23 +89,39 @@ function Step (var arrToPrint: map) : integer;
 var
 NextStepMap : map;
 number_of_neighbours, i, j : integer;
+icount : integer;
 begin
-     for i := 1 to 70 do
+icount := 0;
+PrintArray(NextStepMap);
+readln();
+     for i := 1 to 10 do
      begin
-         for j := 1 to 70 do
+         for j := 1 to 10 do
              begin
              number_of_neighbours := GetNumberOfNeighbours(arrToPrint, i, j);
+
+                  if (arrToPrint[i][j] = 1) then
+                     icount := icount + 1;
+
                   if (arrToPrint[i][j] = 0) and (number_of_neighbours = 3) then
                      NextStepMap[i][j] := 1;
 
-                  if (number_of_neighbours >= 4) or (number_of_neighbours <= 1)then
+                  if (arrToPrint[i][j] = 1) and ((number_of_neighbours >= 4) or (number_of_neighbours <= 1)) then
+                     NextStepMap[i][j] := 0;
+
+                  if (arrToPrint[i][j] = 0) and ((number_of_neighbours >= 4) or (number_of_neighbours <= 1)) then
                      NextStepMap[i][j] := 0;
 
                   if (arrToPrint[i][j] = 1) and ((number_of_neighbours = 2) or (number_of_neighbours = 3)) then
                      NextStepMap[i][j] := 1;
+
+                  if (arrToPrint[i][j] = 0) and (number_of_neighbours = 2) then
+                     NextStepMap[i][j] := 0;
              end;
      end;
 PrintArray(NextStepMap);
+writeln (' ');
+writeln (icount);
 end;
 //Step Ends
 
@@ -113,14 +131,20 @@ var
 arrToFill : map;
 i, j, inum : integer;
 begin
-          for i := 1 to 70 do
-              for j := 1 to 70 do
+randomize;
+          for i := 1 to 10 do
+              for j := 1 to 10 do
                   begin
-                  arrToFill[i][j] := 0;
+                   inum := Random(5);
+                        if inum = 4 then
+                           begin
+                                arrToFill[i][j] := 1;
+                           end
+                        else
+                            begin
+                                 arrToFill[i][j] := 0;
+                            end;
                   end;
-arrToFill[10][10] := 1;
-arrToFill[10][11] := 1;
-arrToFill[10][12] := 1;
 PrintArray(arrToFill);
 readln();
 
