@@ -1,0 +1,103 @@
+{Filename 	: TkaDanBacteriaGraphics}
+{Program	:          }
+{Outline                   }
+{Programmer : Danylo Tkachenko}
+{Class	    : ICS3U (Mr.Sze)}
+{Due Date	: 2017-11-14}
+uses Crt, Graph;
+
+type
+map = array [1..70] of array [1..70] of integer;
+
+var
+gd,gm : smallint;
+bogdan : map;
+
+procedure DrawBacteria (var BacteriaX, BacteriaY : integer);
+          begin
+               Rectangle(10+5+(BacteriaX-1)*10, 10+5+(BacteriaY-1)*10,10+5+(BacteriaX-1)*10, 10+5+(BacteriaY-1)*10)
+          end;
+
+
+//FillArray Begins
+function FillArray(var arrToFill: map) : integer;
+var
+i, j, inum : integer;
+begin
+randomize;
+          for i := 1 to 70 do
+              for j := 1 to 70 do
+                  begin
+                   inum := Random(5);
+                        if inum = 4 then
+                           begin
+                                arrToFill[i][j] := 1;
+                           end
+                        else
+                            begin
+                                 arrToFill[i][j] := 0;
+                            end;
+                  end;
+end;
+//FillArray Ends
+
+
+//PrintArray Begins
+function PrintArray(var arrToPrint: map) : integer;
+var
+i, j : integer;
+begin
+     for i := 1 to 70 do
+     begin
+         for j := 1 to 70 do
+             begin
+              if (arrToPrint[i][j] = 1) then
+                 DrawBacteria(i,j);
+             end;
+         writeln ('');
+     end;
+end;
+//PrintArray Ends
+
+procedure DisplayAMap; //EACH SQUARE OF THE MAP IS 10 BY 10
+var
+i : integer;
+          begin
+               for i := 1 to 70 do
+                   begin
+                        MoveTo(10*i, 10);
+                        LineTo(10*i, 700);
+                        MoveTo(10, 10*i);
+                        LineTo(700, 10*i);
+                   end;
+          end;
+
+{procedure DrawBacteria;
+var
+BacteriaX, BacteriaY : integer;
+          begin
+               bar(10+5+(BacteriaX-1)*10, 10+5+(BacteriaY-1)*10,10+5+(BacteriaX-1)*10, 10+5+(BacteriaY-1)*10)
+          end;}
+
+
+begin
+
+gd:=detect;
+gm:=0;
+InitGraph(gd,gm, 'c:\dev-pas');
+
+setbkcolor(5);
+setcolor(12);
+settextstyle(2,0,4);  //5 'stead of 4
+outtextxy(710,10,'Bacteria Simulation');
+setcolor(8); //black - 16
+
+DisplayAMap;
+//DrawBacteria;
+
+setcolor(12);
+FillArray(bogdan);
+PrintArray(bogdan);
+
+readkey;
+end.
