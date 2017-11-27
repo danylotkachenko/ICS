@@ -7,17 +7,16 @@
 uses Crt, Graph;
 
 type
-map = array [1..70] of array [1..70] of integer;
+map = array [1..120] of array [1..120] of integer;
 
 var
 gd,gm : smallint;
-bogdan : map;
+bacteria : map;
 
 procedure DrawBacteria (var BacteriaX, BacteriaY : integer);
           begin
-               Rectangle(10+5+(BacteriaX-1)*10, 10+5+(BacteriaY-1)*10,10+5+(BacteriaX-1)*10, 10+5+(BacteriaY-1)*10)
+               Rectangle(6+3+(BacteriaX-1)*6, 6+3+(BacteriaY-1)*6,6+3+(BacteriaX-1)*6, 6+3+(BacteriaY-1)*6)
           end;
-
 
 //FillArray Begins
 function FillArray(var arrToFill: map) : integer;
@@ -25,11 +24,11 @@ var
 i, j, inum : integer;
 begin
 randomize;
-          for i := 1 to 70 do
-              for j := 1 to 70 do
+          for i := 1 to 120 do
+              for j := 1 to 120 do
                   begin
-                   inum := Random(5);
-                        if inum = 4 then
+                   inum := Random(10);
+                        if inum = 5 then
                            begin
                                 arrToFill[i][j] := 1;
                            end
@@ -47,14 +46,14 @@ function PrintArray(var arrToPrint: map) : integer;
 var
 i, j : integer;
 begin
-     for i := 1 to 70 do
+     for i := 1 to 120 do
      begin
-         for j := 1 to 70 do
+         for j := 1 to 120 do
              begin
               if (arrToPrint[i][j] = 1) then
                  DrawBacteria(i,j);
              end;
-         writeln ('');
+
      end;
 end;
 //PrintArray Ends
@@ -63,21 +62,37 @@ procedure DisplayAMap; //EACH SQUARE OF THE MAP IS 10 BY 10
 var
 i : integer;
           begin
-               for i := 1 to 70 do
+               for i := 1 to 121 do
                    begin
-                        MoveTo(10*i, 10);
-                        LineTo(10*i, 700);
-                        MoveTo(10, 10*i);
-                        LineTo(700, 10*i);
+                        MoveTo(6*i, 6);
+                        LineTo(6*i, 726);
+                        MoveTo(6, 6*i);
+                        LineTo(726, 6*i);
                    end;
           end;
 
-{procedure DrawBacteria;
-var
-BacteriaX, BacteriaY : integer;
-          begin
-               bar(10+5+(BacteriaX-1)*10, 10+5+(BacteriaY-1)*10,10+5+(BacteriaX-1)*10, 10+5+(BacteriaY-1)*10)
-          end;}
+{procedure Border;
+begin
+MoveTo(6, 6);
+LineTo(726, 6);
+LineTo(726, 726);
+LineTo(6, 726);
+LineTo(6, 6);
+end;}
+
+procedure DrawBorder;
+begin
+Line(5, 5, 727, 5);
+Line(727, 5, 727, 727);
+Line(727, 727, 5, 727);
+Line(5, 727, 5, 5);
+
+Line(727, 50, 1400, 50);
+Line(1100, 50, 1100, 500);
+Line(727, 500, 1400, 500);
+Line(727, 727, 1400, 727);
+end;
+
 
 
 begin
@@ -87,17 +102,20 @@ gm:=0;
 InitGraph(gd,gm, 'c:\dev-pas');
 
 setbkcolor(5);
-setcolor(12);
+setcolor(7);     //12
 settextstyle(2,0,4);  //5 'stead of 4
-outtextxy(710,10,'Bacteria Simulation');
-setcolor(8); //black - 16
+outtextxy(736,6,'Bacteria Simulation');
 
-DisplayAMap;
-//DrawBacteria;
+{setcolor(8); //black - 16
+DisplayAMap;} //map
 
 setcolor(12);
-FillArray(bogdan);
-PrintArray(bogdan);
+FillArray(bacteria);
+PrintArray(bacteria);
+
+setcolor(7);
+DrawBorder;
+
 
 readkey;
 end.
