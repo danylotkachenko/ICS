@@ -87,10 +87,12 @@ Line(727, 5, 727, 727);
 Line(727, 727, 5, 727);
 Line(5, 727, 5, 5);
 
-Line(727, 50, 1400, 50);
+Line(727, 50, 1360, 50);
 Line(1100, 50, 1100, 500);
-Line(727, 500, 1400, 500);
-Line(727, 727, 1400, 727);
+Line(727, 500, 1360, 500);
+Line(727, 727, 1360, 727);
+Line(727, 5, 1360, 5);
+Line(1360, 5, 1360, 727);
 end;
 
 
@@ -104,7 +106,7 @@ InitGraph(gd,gm, 'c:\dev-pas');
 setbkcolor(5);
 setcolor(7);     //12
 settextstyle(2,0,4);  //5 'stead of 4
-outtextxy(736,6,'Bacteria Simulation');
+outtextxy(736,13,'Bacteria Simulation');
 
 {setcolor(8); //black - 16
 DisplayAMap;} //map
