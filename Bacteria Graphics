@@ -4,7 +4,7 @@
 {Programmer : Danylo Tkachenko}
 {Class	    : ICS3U (Mr.Sze)}
 {Due Date	: 2017-11-14}
-uses Crt, Graph;
+uses WinCrt, Graph;
 
 type
 map = array [1..120] of array [1..120] of integer;
@@ -12,73 +12,6 @@ map = array [1..120] of array [1..120] of integer;
 var
 gd,gm : smallint;
 bacteria : map;
-
-procedure DrawBacteria (var BacteriaX, BacteriaY : integer);
-          begin
-               Rectangle(6+3+(BacteriaX-1)*6, 6+3+(BacteriaY-1)*6,6+3+(BacteriaX-1)*6, 6+3+(BacteriaY-1)*6)
-          end;
-
-//FillArray Begins
-function FillArray(var arrToFill: map) : integer;
-var
-i, j, inum : integer;
-begin
-randomize;
-          for i := 1 to 120 do
-              for j := 1 to 120 do
-                  begin
-                   inum := Random(10);
-                        if inum = 5 then
-                           begin
-                                arrToFill[i][j] := 1;
-                           end
-                        else
-                            begin
-                                 arrToFill[i][j] := 0;
-                            end;
-                  end;
-end;
-//FillArray Ends
-
-
-//PrintArray Begins
-function PrintArray(var arrToPrint: map) : integer;
-var
-i, j : integer;
-begin
-     for i := 1 to 120 do
-     begin
-         for j := 1 to 120 do
-             begin
-              if (arrToPrint[i][j] = 1) then
-                 DrawBacteria(i,j);
-             end;
-
-     end;
-end;
-//PrintArray Ends
-
-procedure DisplayAMap; //EACH SQUARE OF THE MAP IS 10 BY 10
-var
-i : integer;
-          begin
-               for i := 1 to 121 do
-                   begin
-                        MoveTo(6*i, 6);
-                        LineTo(6*i, 726);
-                        MoveTo(6, 6*i);
-                        LineTo(726, 6*i);
-                   end;
-          end;
-
-{procedure Border;
-begin
-MoveTo(6, 6);
-LineTo(726, 6);
-LineTo(726, 726);
-LineTo(6, 726);
-LineTo(6, 6);
-end;}
 
 procedure DrawBorder;
 begin
@@ -95,6 +28,151 @@ Line(727, 5, 1360, 5);
 Line(1360, 5, 1360, 727);
 end;
 
+procedure DrawBacteria (var BacteriaX, BacteriaY : integer);
+          begin
+               Rectangle(6+3+(BacteriaX-1)*6, 6+3+(BacteriaY-1)*6,6+3+(BacteriaX-1)*6, 6+3+(BacteriaY-1)*6)
+          end;
+
+//PrintArray Begins
+function DrawArray(var arrToPrint: map) : integer;
+var
+i, j : integer;
+begin
+     for i := 1 to 120 do
+         begin
+              for j := 1 to 120 do
+                  begin
+                       if (arrToPrint[i][j] = 1) then
+                          DrawBacteria(i,j);
+                  end;
+
+         end;
+end;
+//PrintArray Ends
+
+//GetNumberOfNeighbours Begins
+function GetNumberOfNeighbours (var arrToPrint : map; i, j : integer) : integer;  //sub , with ;
+begin
+GetNumberOfNeighbours := 0;
+
+if (i+1 <= 10) and (arrToPrint[i+1][j] = 1) then
+GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
+
+if (i-1 >= 1) and (arrToPrint[i-1][j] = 1) then
+GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
+
+if (j+1 <= 10) and (arrToPrint[i][j+1] = 1) then
+GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
+
+if (j-1 >= 1) and (arrToPrint[i][j-1] = 1) then
+GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
+
+if (i+1 <= 10) and (j+1 <= 10) and (arrToPrint[i+1][j+1] = 1) then
+GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
+
+if (i-1 >= 1) and (j-1 >= 1) and (arrToPrint[i-1][j-1] = 1) then
+GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
+
+if (i+1 <= 10) and (j-1 >= 1) and (arrToPrint[i+1][j-1] = 1) then
+GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
+
+if (i-1 >= 1) and (j+1 <= 10) and (arrToPrint[i-1][j+1] = 1) then
+GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
+
+end;
+//GetNumberOfNeighbours Ends
+
+//Step Begins
+function Step (var arrToPrint: map) : integer;
+var
+NextStepMap : map;
+number_of_neighbours, i, j : integer;
+icount : integer;
+begin
+icount := 0;
+     for i := 1 to 120 do
+     begin
+         for j := 1 to 120 do
+             begin
+             number_of_neighbours := GetNumberOfNeighbours(arrToPrint, i, j);
+
+                  if (arrToPrint[i][j] = 1) then
+                     icount := icount + 1;
+
+                  if (arrToPrint[i][j] = 0) and (number_of_neighbours = 3) then
+                     NextStepMap[i][j] := 1;
+
+                  if (arrToPrint[i][j] = 1) and ((number_of_neighbours >= 4) or (number_of_neighbours <= 1)) then
+                     NextStepMap[i][j] := 0;
+
+                  if (arrToPrint[i][j] = 0) and ((number_of_neighbours >= 4) or (number_of_neighbours <= 1)) then
+                     NextStepMap[i][j] := 0;
+
+                  if (arrToPrint[i][j] = 1) and ((number_of_neighbours = 2) or (number_of_neighbours = 3)) then
+                     NextStepMap[i][j] := 1;
+
+                  if (arrToPrint[i][j] = 0) and (number_of_neighbours = 2) then
+                     NextStepMap[i][j] := 0;
+             end;
+     end;
+
+
+for i := 1 to 120 do
+     begin
+         for j := 1 to 120 do
+             begin
+                  arrToPrint[i][j] := NextStepMap[i][j];
+             end;
+     end;
+
+end;
+//Step Ends
+
+//Simulation Begins
+function Simulation: integer;
+var
+arrToFill : map;
+i, j, k, inum : integer;
+begin
+randomize;
+          for i := 1 to 120 do
+              for j := 1 to 120 do
+                  begin
+                   inum := Random(5);
+                        if inum = 4 then
+                           begin
+                                arrToFill[i][j] := 1;
+                           end
+                        else
+                            begin
+                                 arrToFill[i][j] := 0;
+                            end;
+                  end;
+DrawArray(arrToFill);//current state
+readkey;
+for k := 1 to 20 do //duration
+begin
+     //CleanMap(arrToFill); //add procedure that erases the bacteria
+     Step(arrToFill);
+     DrawArray(arrToFill);//new state
+     readkey;
+end;
+readkey;
+end;
+//Simulation Ends
+
+procedure DisplayAMap;
+var
+i : integer;
+          begin
+               for i := 1 to 121 do
+                   begin
+                        MoveTo(6*i, 6);
+                        LineTo(6*i, 726);
+                        MoveTo(6, 6*i);
+                        LineTo(726, 6*i);
+                   end;
+          end;
 
 
 begin
@@ -103,21 +181,19 @@ gd:=detect;
 gm:=0;
 InitGraph(gd,gm, 'c:\dev-pas');
 
-setbkcolor(5);
-setcolor(7);     //12
-settextstyle(2,0,4);  //5 'stead of 4
-outtextxy(736,13,'Bacteria Simulation');
-
-{setcolor(8); //black - 16
-DisplayAMap;} //map
-
-setcolor(12);
-FillArray(bacteria);
-PrintArray(bacteria);
-
 setcolor(7);
 DrawBorder;
 
+//setbkcolor(5);
+setcolor(7);     //12
+settextstyle(2,0,4);  //5 'stead of 4
+outtextxy(736,13,'Bacteria Simulation');
+settextstyle(1,0,1);  //5 'stead of 4
+outtextxy(735,505,'Statistics:');
 
-readkey;
+setcolor(8); //black - 16
+DisplayAMap; //map
+
+setcolor(12);
+Simulation;
 end.
