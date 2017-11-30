@@ -3,18 +3,22 @@
 {Outline                   }
 {Programmer : Danylo Tkachenko}
 {Class	    : ICS3U (Mr.Sze)}
-{Due Date	: 2017-11-14}
+{Due Date	: 2017-12-8}
 uses WinCrt, Graph;
 
 type
 map = array [1..120] of array [1..120] of integer;
 
+procedure DrawBorder;
 var
 gd,gm : smallint;
-bacteria : map;
 
-procedure DrawBorder;
 begin
+gd:=detect;
+gm:=0;
+InitGraph(gd,gm, 'c:\dev-pas');
+
+setcolor(7);
 Line(5, 5, 727, 5);
 Line(727, 5, 727, 727);
 Line(727, 727, 5, 727);
@@ -61,7 +65,7 @@ begin
          begin
               for j := 1 to 120 do
                   begin
-                       CleanBacteria(i,j);
+                  CleanBacteria(i,j);
                        if (arrToPrint[i][j] = 1) then
                           DrawBacteria(i,j);
                   end;
@@ -120,12 +124,12 @@ end;
 //GetNumberOfNeighbours Ends
 
 //Step Begins
-function Step (var arrToPrint: map) : integer;
+function Step (var arrToPrint: map) : integer; //add NextStepMap as an argument
 var
 NextStepMap : map;
 number_of_neighbours, i, j : integer;
 icount : integer;
-ibacteria_count : integer;
+//ibacteria_count : integer;
 begin
 icount := 0;
      for i := 1 to 120 do
@@ -134,8 +138,8 @@ icount := 0;
              begin
              number_of_neighbours := GetNumberOfNeighbours(arrToPrint, i, j);
 
-                  if (arrToPrint[i][j] = 1) then
-                     icount := icount + 1;
+                  {if (arrToPrint[i][j] = 1) then
+                     icount := icount + 1;}
 
                   if (arrToPrint[i][j] = 0) and (number_of_neighbours = 3) then
                      NextStepMap[i][j] := 1;
@@ -154,14 +158,14 @@ icount := 0;
              end;
      end;
 
-//ibacteria_count := 1;
+//ibacteria_count := 0;
 for i := 1 to 120 do
      begin
          for j := 1 to 120 do
              begin
                   arrToPrint[i][j] := NextStepMap[i][j];
-                                   {if NextStep[i][j] = 1 then
-                                      ibacteria_count := 1;}    //calculates number of bacteria
+                                   {if NextStepMap[i][j] = 1 then
+                                      ibacteria_count := ibacteria_count + 1;  //calculates number of bacteria}
              end;
      end;
 
@@ -209,6 +213,7 @@ procedure DisplayAMap;
 var
 i : integer;
           begin
+          setcolor(8); //black - 16
                for i := 1 to 121 do
                    begin
                         MoveTo(6*i, 6);
@@ -218,26 +223,21 @@ i : integer;
                    end;
           end;
 
-
+//MAIN
 begin
-gd:=detect;
-gm:=0;
-InitGraph(gd,gm, 'c:\dev-pas');
 
-setcolor(7);
 DrawBorder;
 
 //setbkcolor(5);
 setcolor(7);     //12
-settextstyle(2,0,4);  //5 'stead of 4
-outtextxy(736,13,'Bacteria Simulation');
-settextstyle(1,0,1);  //5 'stead of 4
+settextstyle(2,0,4);  //5
+outtextxy(736,13,'Bacteria Simulator');
+settextstyle(1,0,1);
 outtextxy(735,505,'Statistics:');
 
-setcolor(8); //black - 16
-//DisplayAMap; //map
+//DisplayAMap;
 
-//setcolor(12);
 Simulation;
 
 end.
+//MAIN
