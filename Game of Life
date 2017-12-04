@@ -57,7 +57,8 @@ i, j : integer;
           end;}
 
 //PrintArray Begins
-function DrawArray(var arrToPrint: map) : integer;
+
+function DrawArray(var CurrentMap, NextStepMap: map) : integer;
 var
 i, j : integer;
 begin
@@ -65,31 +66,22 @@ begin
          begin
               for j := 1 to 120 do
                   begin
-                  CleanBacteria(i,j);
-                       if (arrToPrint[i][j] = 1) then
-                          DrawBacteria(i,j);
+                       if (CurrentMap[i][j] <> NextStepMap[i][j]) then
+                       begin
+                            if (NextStepMap[i][j] = 0) then
+                               begin
+                               CleanBacteria(i,j);
+                               end;
+                            if (NextStepMap[i][j] = 1) then
+                               begin
+                               DrawBacteria(i,j);
+                               end;
+                       end;
                   end;
-
          end;
 end;
 //PrintArray Ends
 
-//EraseArray Begins
-function CleanBacteria(var arrToPrint: map) : integer;
-var
-i, j : integer;
-begin
-     for i := 1 to 120 do
-         begin
-              for j := 1 to 120 do
-                  begin
-                       if (arrToPrint[i][j] = 1) then
-                          CleanBacteria(i,j);
-                  end;
-
-         end;
-end;
-//EraseArray Ends
 
 //GetNumberOfNeighbours Begins
 function GetNumberOfNeighbours (var arrToPrint : map; i, j : integer) : integer;
@@ -124,16 +116,14 @@ end;
 //GetNumberOfNeighbours Ends
 
 //Step Begins
-function Step (var arrToPrint: map) : integer; //add NextStepMap as an argument
+function Step (var arrToPrint, NextStepMap: map) : integer; //add NextStepMap as an argument
 var
-NextStepMap : map;
 number_of_neighbours, i, j : integer;
 icount : integer;
 //ibacteria_count : integer;
 begin
 icount := 0;
      for i := 1 to 120 do
-     begin
          for j := 1 to 120 do
              begin
              number_of_neighbours := GetNumberOfNeighbours(arrToPrint, i, j);
@@ -156,18 +146,17 @@ icount := 0;
                   if (arrToPrint[i][j] = 0) and (number_of_neighbours = 2) then
                      NextStepMap[i][j] := 0;
              end;
-     end;
 
 //ibacteria_count := 0;
-for i := 1 to 120 do
+{for i := 1 to 120 do
      begin
          for j := 1 to 120 do
              begin
                   arrToPrint[i][j] := NextStepMap[i][j];
-                                   {if NextStepMap[i][j] = 1 then
-                                      ibacteria_count := ibacteria_count + 1;  //calculates number of bacteria}
+                                   if NextStepMap[i][j] = 1 then
+                                      ibacteria_count := ibacteria_count + 1;  //calculates number of bacteria
              end;
-     end;
+     end;}
 
 end;
 //Step Ends
@@ -175,32 +164,35 @@ end;
 //Simulation Begins
 function Simulation: integer;
 var
-arrToFill : map;
+current_map, nextstep_map : map;
 i, j, k, inum : integer;
 begin
 randomize;
           for i := 1 to 120 do
               for j := 1 to 120 do
                   begin
+                   nextstep_map[i][j] := 0;
                    inum := Random(5);
                         if inum = 4 then
                            begin
-                                arrToFill[i][j] := 1;
+                                current_map[i][j] := 1;
                            end
                         else
                             begin
-                                 arrToFill[i][j] := 0;
+                                 current_map[i][j] := 0;
                             end;
                   end;
-DrawArray(arrToFill);//current state
+DrawArray(nextstep_map, current_map);//current state
 //delay(200);
 //readkey;
 
 for k := 1 to 1000 do  //duration
 begin
-     //CleanBacteria(arrToFill); //procedure that erases the bacteria, doesn't allow to draw new bacteria
-     Step(arrToFill);
-     DrawArray(arrToFill);  //new state
+     Step(current_map, nextstep_map);
+     DrawArray(current_map, nextstep_map);  //new state
+     for i := 1 to 120 do
+              for j := 1 to 120 do
+              current_map[i][j] := nextstep_map[i][j];
      //delay(200);
      //readkey;
 end;
@@ -222,6 +214,7 @@ i : integer;
                         LineTo(726, 6*i);
                    end;
           end;
+
 
 //MAIN
 begin
