@@ -4,7 +4,7 @@
 {Programmer : Danylo Tkachenko}
 {Class	    : ICS3U (Mr.Sze)}
 {Due Date	: 2017-12-8}
-uses WinCrt, Graph;
+uses WinCrt, Graph, sysutils;
 
 type
 map = array [1..120] of array [1..120] of integer;
@@ -44,20 +44,14 @@ procedure CleanBacteria (var CoverX, CoverY : integer);
                Rectangle(6+3+(CoverX-1)*6, 6+3+(CoverY-1)*6,6+3+(CoverX-1)*6, 6+3+(CoverY-1)*6)
           end;
 
-{procedure TestDrawing;
-var
-i, j : integer;
+procedure BlackBox;
           begin
-          i := 5;
-          j := 5;
-          DrawBacteria(i, j);
-          readkey;
-          CleanBacteria(i, j);
-          readkey;
-          end;}
+               setcolor(10);
+               Bar(850, 510, 1340, 580 {715})
+          end;
+
 
 //PrintArray Begins
-
 function DrawArray(var CurrentMap, NextStepMap: map) : integer;
 var
 i, j : integer;
@@ -70,11 +64,11 @@ begin
                        begin
                             if (NextStepMap[i][j] = 0) then
                                begin
-                               CleanBacteria(i,j);
+                                    CleanBacteria(i,j);
                                end;
                             if (NextStepMap[i][j] = 1) then
                                begin
-                               DrawBacteria(i,j);
+                                    DrawBacteria(i,j);
                                end;
                        end;
                   end;
@@ -115,20 +109,16 @@ GetNumberOfNeighbours := GetNumberOfNeighbours + 1;
 end;
 //GetNumberOfNeighbours Ends
 
+
 //Step Begins
 function Step (var arrToPrint, NextStepMap: map) : integer; //add NextStepMap as an argument
 var
 number_of_neighbours, i, j : integer;
-//icount : integer;
 begin
-//icount := 0;
      for i := 1 to 120 do
          for j := 1 to 120 do
              begin
              number_of_neighbours := GetNumberOfNeighbours(arrToPrint, i, j);
-
-                  {if (arrToPrint[i][j] = 1) then
-                     icount := icount + 1;}
 
                   if (arrToPrint[i][j] = 0) and (number_of_neighbours = 3) then
                      NextStepMap[i][j] := 1;
@@ -148,29 +138,49 @@ begin
 end;
 //Step Ends
 
+
 //BacteriaCounter Begins
 function BacteriaCounter (var NextStepMap: map) : integer;
 var
 ibacteria_count, icount, i, j : integer;
+ibacteria_count_string : longint;
 begin
      ibacteria_count := 0;
      icount := 0;
                      for i := 1 to 120 do
                          for j := 1 to 120 do
                              if NextStepMap[i][j] = 1 then
-                                ibacteria_count := ibacteria_count + 1;  //calculates number of bacteria
-
+                                begin
+                                     ibacteria_count := ibacteria_count + 1;  //calculates number of bacteria
+                                end;
 BacteriaCounter := ibacteria_count;
 end;
 //BacteriaCounter Ends
+
 
 //Simulation Begins
 function Simulation: integer;
 var
 current_map, nextstep_map : map;
-i, j, k, inum : integer;
+i, j, k, inum, icycle : integer;
+ch : char;
+scycle_string, snumber_of_bacteria, spercent : longint; //for conversion
+inumber_of_bacteria, ipercent : integer;
 begin
+icycle := 0;
 randomize;
+
+/////////////////////////////////////////////////
+settextstyle(2,0,2);
+setcolor(12);
+outtextxy(735, 60, 'Press "Enter" to start');
+//outtextxy(735, 80, 'simulation');
+repeat
+    ch:=ReadKey;
+
+until ch=#13;
+/////////////////////////////////////////////////
+
           for i := 1 to 120 do
               for j := 1 to 120 do
                   begin
@@ -186,24 +196,41 @@ randomize;
                             end;
                   end;
 DrawArray(nextstep_map, current_map);//current state
-//delay(200);
-//readkey;
 
+inumber_of_bacteria := BacteriaCounter(current_map);
+setcolor(7);
+settextstyle(1,0,1);
+outtextxy(935,580, (IntToStr(inumber_of_bacteria shl snumber_of_bacteria)));
 repeat
+//itteration begins
+icycle := icycle + 1;
+setcolor(7);
+settextstyle(1,0,1);
+outtextxy(855,535, (IntToStr(icycle shl scycle_string)));//itteration
+outtextxy(855,520, (IntToStr(inumber_of_bacteria shl snumber_of_bacteria)));
+outtextxy(840,550, (IntToStr(ipercent shl spercent)));
+delay(20);
+BlackBox;
+//itteration ends
+
      Step(current_map, nextstep_map);
      DrawArray(current_map, nextstep_map);  //new state
      for i := 1 to 120 do
               for j := 1 to 120 do
-              current_map[i][j] := nextstep_map[i][j];
+                  current_map[i][j] := nextstep_map[i][j];
 
-until BacteriaCounter(nextstep_map) = 0;
-//end;
 
-readkey;
+inumber_of_bacteria := BacteriaCounter(nextstep_map);
+ipercent := (inumber_of_bacteria*100) div 14400;
+until inumber_of_bacteria = 0;
+
 end;
 //Simulation Ends
 
+
+//DisplayAMap Begins
 procedure DisplayAMap;
+
 var
 i : integer;
           begin
@@ -216,19 +243,26 @@ i : integer;
                         LineTo(726, 6*i);
                    end;
           end;
+//DisplayAMap Ends
 
 
 //MAIN
 begin
-
 DrawBorder;
 
-//setbkcolor(5);
 setcolor(7);     //12
 settextstyle(2,0,4);  //5
 outtextxy(736,13,'Bacteria Simulator');
 settextstyle(1,0,1);
 outtextxy(735,505,'Statistics:');
+settextstyle(1,0,1);
+outtextxy(740,520,'# of bacteria:');
+outtextxy(740,535,'Iteration:');
+outtextxy(740,550,'Percentage(%):');
+outtextxy(740,565,'Space: 14400');
+outtextxy(740,580,'Initial # of bacteria:');
+
+
 
 
 //DisplayAMap;
