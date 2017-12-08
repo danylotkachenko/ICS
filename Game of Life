@@ -46,8 +46,14 @@ procedure CleanBacteria (var CoverX, CoverY : integer);
 
 procedure BlackBox;
           begin
-               setcolor(10);
-               Bar(850, 510, 1340, 558{715})
+               setcolor(16);
+               Bar(850, 510, 1340, 558)
+          end;
+
+procedure InitialMenuEraser;
+          begin
+               setcolor(16);
+               Bar(730, 55, 1090, 200)
           end;
 
 
@@ -169,7 +175,7 @@ outtextxy(735,150,'2 or 3 neighbours - survives for another');
 outtextxy(735,165,'cycle');
 outtextxy(735,190,'An empty(dead) cell must have three live');
 outtextxy(735,205,'neighbours in order to give birth to a live');
-outtextxy(735,220,'cell.');
+outtextxy(735,220,'cell');
 
 end;
 //DescriptionAndRules Ends
@@ -183,12 +189,43 @@ ch : char;
 scycle_string, snumber_of_bacteria, spercent, sspace : longint; //for conversion
 inumber_of_bacteria, ipercent : integer;
 previous_numberofbacteria, repeat_counter : integer;
+random_percentage : integer; //for random function
 const
 ispace = 14400;
 
 begin
 icycle := 0;
 randomize;
+random_percentage := 0;
+
+settextstyle(2,0,2);
+setcolor(12);
+outtextxy(735,60, 'Bacteria Percentage');
+settextstyle(1,0,1);
+outtextxy(735,90, 'Click the corresponding key:');
+settextstyle(1,0,1);
+setcolor(7);
+outtextxy(735,105, 'a - 5%');
+outtextxy(735,120, 'b - 10%');
+outtextxy(735,135, 'c - 25%');
+outtextxy(735,150, 'd - 50%');
+
+ch := ReadKey;
+repeat
+
+if ch = #97 then
+   random_percentage := 20; //5%
+if ch = #98 then
+   random_percentage := 10; //10%
+if ch = #99 then
+   random_percentage := 4;  //25%
+if ch = #100 then
+   random_percentage := 2;  //50%
+
+until random_percentage > 0;
+InitialMenuEraser;
+
+
 
 /////////////////////////////////////////////////
 settextstyle(2,0,2);
@@ -206,8 +243,8 @@ until ch=#13;
               for j := 1 to 120 do
                   begin
                    nextstep_map[i][j] := 0;
-                   inum := Random(5);
-                        if inum = 4 then
+                   inum := Random(random_percentage);
+                        if inum = 1 then
                            begin
                                 current_map[i][j] := 1;
                            end
