@@ -47,7 +47,7 @@ procedure CleanBacteria (var CoverX, CoverY : integer);
 procedure BlackBox;
           begin
                setcolor(10);
-               Bar(850, 510, 1340, 580 {715})
+               Bar(850, 510, 1340, 558{715})
           end;
 
 
@@ -157,6 +157,22 @@ BacteriaCounter := ibacteria_count;
 end;
 //BacteriaCounter Ends
 
+//DescriptionAndRules Begins
+procedure DescriptionAndRules;
+begin
+setcolor(7);     //12
+settextstyle(2,0,2);  //5
+outtextxy(735,100,'Rules:');
+settextstyle(1,0,1);
+outtextxy(735,125,'1 or 4(or more) neighbours - cell dies');
+outtextxy(735,150,'2 or 3 neighbours - survives for another');
+outtextxy(735,165,'cycle');
+outtextxy(735,190,'An empty(dead) cell must have three live');
+outtextxy(735,205,'neighbours in order to give birth to a live');
+outtextxy(735,220,'cell.');
+
+end;
+//DescriptionAndRules Ends
 
 //Simulation Begins
 function Simulation: integer;
@@ -164,8 +180,12 @@ var
 current_map, nextstep_map : map;
 i, j, k, inum, icycle : integer;
 ch : char;
-scycle_string, snumber_of_bacteria, spercent : longint; //for conversion
+scycle_string, snumber_of_bacteria, spercent, sspace : longint; //for conversion
 inumber_of_bacteria, ipercent : integer;
+previous_numberofbacteria, repeat_counter : integer;
+const
+ispace = 14400;
+
 begin
 icycle := 0;
 randomize;
@@ -175,6 +195,7 @@ settextstyle(2,0,2);
 setcolor(12);
 outtextxy(735, 60, 'Press "Enter" to start');
 //outtextxy(735, 80, 'simulation');
+DescriptionAndRules; //
 repeat
     ch:=ReadKey;
 
@@ -198,17 +219,23 @@ until ch=#13;
 DrawArray(nextstep_map, current_map);//current state
 
 inumber_of_bacteria := BacteriaCounter(current_map);
-setcolor(7);
+previous_numberofbacteria := inumber_of_bacteria;
+setcolor(12);
 settextstyle(1,0,1);
-outtextxy(935,580, (IntToStr(inumber_of_bacteria shl snumber_of_bacteria)));
+outtextxy(855,565, (IntToStr(ispace shl sspace)));
+outtextxy(917,580, (IntToStr(inumber_of_bacteria shl snumber_of_bacteria)));
+
+
+repeat_counter := 0;
+
 repeat
 //itteration begins
 icycle := icycle + 1;
-setcolor(7);
+setcolor(12);
 settextstyle(1,0,1);
-outtextxy(855,535, (IntToStr(icycle shl scycle_string)));//itteration
 outtextxy(855,520, (IntToStr(inumber_of_bacteria shl snumber_of_bacteria)));
-outtextxy(840,550, (IntToStr(ipercent shl spercent)));
+outtextxy(855,535, (IntToStr(icycle shl scycle_string)));//itteration
+outtextxy(855,550, (IntToStr(ipercent shl spercent)));
 delay(20);
 BlackBox;
 //itteration ends
@@ -219,11 +246,30 @@ BlackBox;
               for j := 1 to 120 do
                   current_map[i][j] := nextstep_map[i][j];
 
-
 inumber_of_bacteria := BacteriaCounter(nextstep_map);
-ipercent := (inumber_of_bacteria*100) div 14400;
-until inumber_of_bacteria = 0;
 
+//Block determines whether the culture is stable (BEGIN)
+if inumber_of_bacteria = previous_numberofbacteria then
+   begin
+        repeat_counter := repeat_counter + 1;
+   end
+else
+    begin
+         repeat_counter := 0;
+    end;
+previous_numberofbacteria := inumber_of_bacteria;
+//Block determines whether the culture is stable (END)
+
+
+ipercent := (inumber_of_bacteria*100) div 14400;
+
+
+until (inumber_of_bacteria = 0) or (repeat_counter = 10);
+
+settextstyle(2,0,2);
+setcolor(12);
+outtextxy(735,270,'THE CULTURE IS STABLE');
+readkey();
 end;
 //Simulation Ends
 
@@ -245,11 +291,8 @@ i : integer;
           end;
 //DisplayAMap Ends
 
-
-//MAIN
+procedure StaticTextOutput;
 begin
-DrawBorder;
-
 setcolor(7);     //12
 settextstyle(2,0,4);  //5
 outtextxy(736,13,'Bacteria Simulator');
@@ -259,13 +302,19 @@ settextstyle(1,0,1);
 outtextxy(740,520,'# of bacteria:');
 outtextxy(740,535,'Iteration:');
 outtextxy(740,550,'Percentage(%):');
-outtextxy(740,565,'Space: 14400');
+outtextxy(740,565,'Space:');
 outtextxy(740,580,'Initial # of bacteria:');
+end;
 
 
 
+//MAIN
+begin
+DrawBorder;
 
-//DisplayAMap;
+StaticTextOutput;
+
+//DisplayAMap; //a grid
 
 Simulation;
 
